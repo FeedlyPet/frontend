@@ -1,1 +1,502 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@theme {
+    --color-brown-950: #2C1208;
+    --color-brown-800: #7B3A18;
+    --color-brown-600: #A0522D;
+    --color-brown-400: #C4875A;
+    --color-cream-50: #FBF7F2;
+    --color-cream-100: #F5EDE0;
+    --color-cream-200: #EDE3D5;
+    --color-cream-300: #E0D3C0;
+
+    --font-sans: 'Outfit', sans-serif;
+    --font-display: 'Nunito', sans-serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #F5EDE0;
+    color: #1A0A02;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 18, 8, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1rem;
+}
+
+.modal {
+    background: #fff;
+    border-radius: 1.5rem;
+    padding: 1.75rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 8px 40px rgba(44, 18, 8, 0.18);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #2C1208;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #A0522D;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.confirm-modal {
+    text-align: center;
+    max-width: 380px;
+}
+
+.confirm-icon {
+    font-size: 2.5rem;
+}
+
+.confirm-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #2C1208;
+}
+
+.confirm-text {
+    font-size: 0.875rem;
+    color: #A0522D;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.field label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2C1208;
+}
+
+.field input, .field textarea {
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid #E0D3C0;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+    font-family: 'Outfit', sans-serif;
+    color: #2C1208;
+    background: #F5EDE0;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.field input:focus, .field textarea:focus {
+    border-color: #A0522D;
+    background: #fff;
+}
+
+.field input::placeholder {
+    color: #C4875A;
+    opacity: 0.6;
+}
+
+.field input.error, .field textarea.error {
+    border-color: #c0392b;
+}
+
+.field-error {
+    font-size: 0.8rem;
+    color: #c0392b;
+}
+
+.field-hint {
+    font-size: 0.75rem;
+    color: #C4875A;
+}
+
+.select-field {
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid #E0D3C0;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+    font-family: 'Outfit', sans-serif;
+    color: #2C1208;
+    background: #F5EDE0;
+    outline: none;
+    cursor: pointer;
+}
+
+.form-error-banner {
+    background: #FEF0F0;
+    color: #c0392b;
+    border-radius: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 0.65rem;
+    border: 1.5px solid #E0D3C0;
+    background: none;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #7B3A18;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.btn-cancel:hover {
+    border-color: #A0522D;
+}
+
+.btn-confirm {
+    flex: 1;
+    padding: 0.65rem;
+    background: #2C1208;
+    color: #F5EDE0;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: background 0.2s;
+}
+
+.btn-confirm:hover:not(:disabled) {
+    background: #7B3A18;
+}
+
+.btn-confirm:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-danger {
+    flex: 1;
+    padding: 0.65rem;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: background 0.2s;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #c0392b;
+}
+
+.btn-danger:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@keyframes skeleton-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.skeleton {
+    background: #E0D3C0;
+    border-radius: 1.25rem;
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.page-btn {
+    padding: 0.4rem 0.9rem;
+    border: 1.5px solid #E0D3C0;
+    background: #fff;
+    border-radius: 0.65rem;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #7B3A18;
+    transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+    border-color: #A0522D;
+    background: #F5EDE0;
+}
+
+.page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-size: 0.85rem;
+    color: #A0522D;
+    font-weight: 600;
+}
+
+.mqtt-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    background: #FFF8E6;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    color: #7B3A18;
+}
+
+.mqtt-password-block {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #F5EDE0;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+}
+
+.mqtt-password {
+    flex: 1;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: #2C1208;
+    word-break: break-all;
+}
+
+.btn-copy {
+    padding: 0.35rem 0.75rem;
+    border: 1.5px solid #A0522D;
+    background: #fff;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #A0522D;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-copy:hover {
+    background: #A0522D;
+    color: #fff;
+}
+
+.portion-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.portion-field label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #2C1208;
+}
+
+.slider {
+    width: 100%;
+    accent-color: #A0522D;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: #C4875A;
+}
+
+.feed-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #27ae60;
+}
+
+.feed-success .success-icon {
+    font-size: 2.5rem;
+}
+
+.auth-page {
+    min-height: 100vh;
+    background: #F5EDE0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.auth-card {
+    background: #fff;
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 24px rgba(44, 18, 8, 0.08);
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.auth-logo-text {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #2C1208;
+}
+
+.auth-logo-text span {
+    color: #A0522D;
+}
+
+.auth-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #2C1208;
+    text-align: center;
+    margin-bottom: 0.25rem;
+}
+
+.auth-subtitle {
+    font-size: 0.9rem;
+    color: #A0522D;
+    text-align: center;
+    margin-bottom: 1.75rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.auth-links {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.auth-links a {
+    font-size: 0.875rem;
+    color: #7B3A18;
+    text-decoration: none;
+}
+
+.auth-links a:hover {
+    color: #2C1208;
+}
+
+.auth-links a.primary {
+    color: #A0522D;
+}
+
+.btn-submit {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: #2C1208;
+    color: #F5EDE0;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.btn-submit:hover:not(:disabled) {
+    background: #7B3A18;
+}
+
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.error-msg {
+    font-size: 0.85rem;
+    color: #c0392b;
+    background: #fdf0ee;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.success-icon {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
