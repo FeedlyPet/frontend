@@ -28,7 +28,7 @@ export interface PaginatedResponse<T> {
 }
 
 export const petsApi = {
-  getAll: (params?: { page?: number; limit?: number; search?: string }) =>
+  getAll: (params?: { page?: number; limit?: number; search?: string; sortBy?: string; sortOrder?: string }) =>
     api.get<PaginatedResponse<Pet>>('/pets', { params }).then((r) => r.data),
 
   getOne: (id: string) =>

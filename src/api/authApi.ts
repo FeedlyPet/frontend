@@ -6,15 +6,16 @@ export interface LoginDto {
 }
 
 export interface RegisterDto {
+  name: string
   email: string
   password: string
-  firstName: string
-  lastName: string
+  timezone: string
 }
 
 export interface AuthResponse {
   accessToken: string
   refreshToken: string
+  user: { id: string; email: string; name: string }
 }
 
 export const authApi = {
@@ -22,7 +23,7 @@ export const authApi = {
     api.post<AuthResponse>('/auth/login', dto).then((r) => r.data),
 
   register: (dto: RegisterDto) =>
-    api.post('/auth/register', dto).then((r) => r.data),
+    api.post<AuthResponse>('/auth/register', dto).then((r) => r.data),
 
   logout: (refreshToken: string) =>
     api.post('/auth/logout', { refreshToken }).then((r) => r.data),

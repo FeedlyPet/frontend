@@ -3,15 +3,16 @@ import api from './apiClient.ts'
 export interface UserProfile {
   id: string
   email: string
-  firstName: string
-  lastName: string
+  name: string
+  timezone: string
   isEmailVerified: boolean
   createdAt: string
 }
 
 export interface UpdateProfileDto {
-  firstName?: string
-  lastName?: string
+  name?: string
+  email?: string
+  timezone?: string
 }
 
 export interface ChangePasswordDto {
