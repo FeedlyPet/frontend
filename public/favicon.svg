@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+    <defs>
+        <linearGradient id="fav-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#B86E30"/>
+            <stop offset="100%" stop-color="#2C1208"/>
+        </linearGradient>
+        <radialGradient id="fav-tG" cx="38%" cy="28%" r="65%">
+            <stop offset="0%" stop-color="white"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0.65)"/>
+        </radialGradient>
+    </defs>
+    <rect width="80" height="80" rx="18" fill="url(#fav-bg)"/>
+    <g transform="rotate(-28 19 30)">
+        <ellipse cx="19" cy="30" rx="7" ry="8.5" fill="url(#fav-tG)"/>
+        <ellipse cx="18.2" cy="27.5" rx="3.2" ry="4" fill="white" opacity="0.4"/>
+    </g>
+    <g transform="rotate(-8 33 19)">
+        <ellipse cx="33" cy="19" rx="7" ry="8.5" fill="url(#fav-tG)"/>
+        <ellipse cx="32.5" cy="16.5" rx="3.2" ry="4" fill="white" opacity="0.4"/>
+    </g>
+    <g transform="rotate(8 48 19)">
+        <ellipse cx="48" cy="19" rx="7" ry="8.5" fill="url(#fav-tG)"/>
+        <ellipse cx="47.8" cy="16.5" rx="3.2" ry="4" fill="white" opacity="0.4"/>
+    </g>
+    <g transform="rotate(28 62 30)">
+        <ellipse cx="62" cy="30" rx="7" ry="8.5" fill="url(#fav-tG)"/>
+        <ellipse cx="61.5" cy="27.5" rx="3.2" ry="4" fill="white" opacity="0.4"/>
+    </g>
+    <path d="M14 51 C14 40 26 36 40 36 C54 36 66 40 66 51 C66 62 55 72 40 72 C25 72 14 62 14 51 Z" fill="white"
+          opacity="0.92"/>
+    <path d="M35 54 Q40 49.5 45 54" stroke="#8B4513" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+    <path d="M29.5 60 Q40 52 50.5 60" stroke="#8B4513" stroke-width="2.4" stroke-linecap="round" fill="none"
+          opacity="0.55"/>
+    <path d="M24 66 Q40 55 56 66" stroke="#8B4513" stroke-width="2.1" stroke-linecap="round" fill="none"
+          opacity="0.28"/>
+    <circle cx="40" cy="50" r="2.8" fill="#8B4513"/>
+</svg>
