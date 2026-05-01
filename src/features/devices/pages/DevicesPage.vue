@@ -58,7 +58,7 @@ async function fetchDevices() {
   try {
     const res = await devicesApi.getAll({page: page.value, limit, search: search.value || undefined})
     devices.value = res.data
-    total.value = res.total
+    total.value = res.meta.total
 
     const levels = await Promise.all(
         res.data.map(d => devicesApi.getFoodLevel(d.id).then(fl => ({id: d.id, fl})).catch(() => ({

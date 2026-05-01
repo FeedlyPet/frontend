@@ -59,12 +59,12 @@ onMounted(async () => {
 
   try {
     const [petsRes, devicesRes, unread] = await Promise.all([
-      petsApi.getAll({limit: 1}).catch(() => ({data: [], total: 0, page: 1, limit: 1})),
-      devicesApi.getAll({limit: 5}).catch(() => ({data: [], total: 0, page: 1, limit: 5})),
+      petsApi.getAll({limit: 1}).catch(() => ({data: [], meta: {total: 0, page: 1, limit: 1, totalPages: 0, hasNextPage: false, hasPreviousPage: false}})),
+      devicesApi.getAll({limit: 5}).catch(() => ({data: [], meta: {total: 0, page: 1, limit: 5, totalPages: 0, hasNextPage: false, hasPreviousPage: false}})),
       notificationsApi.getUnreadCount().catch(() => 0),
     ])
 
-    petsTotal.value = petsRes.total
+    petsTotal.value = petsRes.meta.total
     devices.value = devicesRes.data
     unreadCount.value = unread
 

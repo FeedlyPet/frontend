@@ -52,7 +52,7 @@ async function fetchNotifications() {
     if (filterType.value !== 'all') params.type = filterType.value
     const res = await notificationsApi.getAll(params)
     notifications.value = res.data
-    total.value = res.total
+    total.value = res.meta.total
   } catch {
     toast.error('Failed to load notifications')
   } finally {

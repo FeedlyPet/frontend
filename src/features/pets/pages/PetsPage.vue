@@ -48,7 +48,7 @@ async function fetchPets() {
       sortOrder: sortOrder.value,
     })
     pets.value = res.data
-    total.value = res.total
+    total.value = res.meta.total
   } catch {
     toast.error('Failed to load pets')
   } finally {

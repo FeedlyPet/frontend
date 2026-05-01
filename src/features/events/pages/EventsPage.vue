@@ -47,7 +47,7 @@ async function fetchEvents() {
     if (endDate.value) params.endDate = endDate.value
     const res = await devicesApi.getEvents(deviceId, params as any)
     events.value = res.data
-    total.value = res.total
+    total.value = res.meta.total
   } catch {
     toast.error('Failed to load feeding history')
   } finally {
