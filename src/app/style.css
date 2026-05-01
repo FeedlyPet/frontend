@@ -65,20 +65,20 @@
 
 /* ── Dark theme ────────────────────────────────────────────────────── */
 [data-theme="dark"] {
-    --bg-page: #1A0E06;
-    --bg-card: #2A1810;
-    --bg-card-alt: #221309;
-    --bg-input: #2A1810;
-    --bg-sidebar: #120800;
-    --bg-header: #1F1008;
+    --bg-page: #1C1210;
+    --bg-card: #2E1F1A;
+    --bg-card-alt: #261815;
+    --bg-input: #2E1F1A;
+    --bg-sidebar: #140C09;
+    --bg-header: #241810;
 
-    --border: #3D2212;
+    --border: #4A2E25;
     --border-focus: #C4875A;
 
     --text-primary: #F5EDE0;
     --text-secondary: #C4875A;
-    --text-muted: #A0522D;
-    --text-faint: #7B3A18;
+    --text-muted: #B07050;
+    --text-faint: #8A5A40;
     --text-on-dark: #F5EDE0;
 
     --sidebar-text: rgba(245, 237, 224, 0.5);
