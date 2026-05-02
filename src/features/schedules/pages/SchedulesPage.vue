@@ -599,4 +599,26 @@ async function confirmDelete() {
 .toggle-field label {
   margin-bottom: 0;
 }
+
+@media (max-width: 480px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-add {
+    width: 100%;
+    text-align: center;
+  }
+  .sched-card {
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+  .sched-main {
+    gap: 0.75rem;
+  }
+  .sched-time {
+    font-size: 1.2rem;
+    min-width: auto;
+  }
+}
 </style>

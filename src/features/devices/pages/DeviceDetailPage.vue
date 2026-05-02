@@ -656,7 +656,6 @@ const portionsLeft = computed(() => {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
-  min-width: 360px;
 }
 
 .events-table th {
@@ -749,5 +748,25 @@ const portionsLeft = computed(() => {
 .btn-regen:hover {
   border-color: var(--text-muted);
   color: var(--text-muted);
+}
+
+@media (max-width: 480px) {
+  .info-card {
+    padding: 1rem;
+  }
+  .section-card {
+    padding: 1rem;
+  }
+  .device-title {
+    font-size: 1.2rem;
+  }
+  .header-actions {
+    gap: 0.35rem;
+  }
+  .btn-edit,
+  .btn-delete {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.78rem;
+  }
 }
 </style>

@@ -248,10 +248,25 @@ async function confirmDelete() {
   align-items: center;
 }
 
+@media (max-width: 480px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sort-wrap {
+    flex: 1;
+  }
+  .btn-add {
+    width: 100%;
+    text-align: center;
+  }
+}
+
 .search-wrap {
   position: relative;
   flex: 1;
-  min-width: 180px;
+  min-width: 0;
+  width: 100%;
 }
 
 .search-icon {
@@ -371,7 +386,7 @@ async function confirmDelete() {
 
 .pets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 1rem;
 }
 

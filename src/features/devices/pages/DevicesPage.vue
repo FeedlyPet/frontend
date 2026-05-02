@@ -267,7 +267,7 @@ async function submitRegister() {
 .search-wrap {
   position: relative;
   flex: 1;
-  min-width: 180px;
+  min-width: 0;
 }
 
 .search-icon {
@@ -322,6 +322,17 @@ async function submitRegister() {
   background: var(--brown-mid);
 }
 
+@media (max-width: 480px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-add {
+    width: 100%;
+    text-align: center;
+  }
+}
+
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
@@ -355,8 +366,14 @@ async function submitRegister() {
 
 .devices-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .devices-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .device-card {

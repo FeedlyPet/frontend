@@ -286,8 +286,14 @@ onMounted(async () => {
 .greeting {
   font-family: 'Nunito', sans-serif;
   font-weight: 800;
-  font-size: 1.75rem;
+  font-size: 1.4rem;
   color: var(--text-primary);
+}
+
+@media (min-width: 480px) {
+  .greeting {
+    font-size: 1.75rem;
+  }
 }
 
 .summary-grid {
@@ -305,13 +311,20 @@ onMounted(async () => {
 .summary-card {
   background: var(--bg-card);
   border-radius: 1.25rem;
-  padding: 1.25rem;
+  padding: 0.85rem;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.6rem;
   box-shadow: var(--shadow-sm);
   text-decoration: none;
   transition: box-shadow 0.2s;
+}
+
+@media (min-width: 480px) {
+  .summary-card {
+    padding: 1.25rem;
+    gap: 0.85rem;
+  }
 }
 
 .summary-card--link:hover {
@@ -319,16 +332,28 @@ onMounted(async () => {
 }
 
 .summary-icon {
-  font-size: 1.75rem;
+  font-size: 1.3rem;
   flex-shrink: 0;
+}
+
+@media (min-width: 480px) {
+  .summary-icon {
+    font-size: 1.75rem;
+  }
 }
 
 .summary-value {
   font-family: 'Nunito', sans-serif;
   font-weight: 800;
-  font-size: 1.3rem;
+  font-size: 1.05rem;
   color: var(--text-primary);
   line-height: 1.1;
+}
+
+@media (min-width: 480px) {
+  .summary-value {
+    font-size: 1.3rem;
+  }
 }
 
 .summary-label {
@@ -340,11 +365,17 @@ onMounted(async () => {
 .section-card {
   background: var(--bg-card);
   border-radius: 1.25rem;
-  padding: 1.5rem;
+  padding: 1rem;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+@media (min-width: 480px) {
+  .section-card {
+    padding: 1.5rem;
+  }
 }
 
 .section-header {
@@ -608,7 +639,6 @@ onMounted(async () => {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
-  min-width: 480px;
 }
 
 .events-table th {

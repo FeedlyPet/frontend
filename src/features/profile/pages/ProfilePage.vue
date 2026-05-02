@@ -150,11 +150,17 @@ async function savePassword() {
 .card {
   background: var(--bg-card);
   border-radius: 1.25rem;
-  padding: 1.75rem;
+  padding: 1.25rem;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+@media (min-width: 480px) {
+  .card {
+    padding: 1.75rem;
+  }
 }
 
 .card-title {

@@ -51,7 +51,6 @@ defineProps<{
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
-  min-width: 360px;
 }
 
 .events-table th {

@@ -430,11 +430,17 @@ const navItems = computed(() => [
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
   position: sticky;
   top: 0;
   z-index: 10;
   transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+@media (min-width: 480px) {
+  .header {
+    padding: 0 1.5rem;
+  }
 }
 
 .header-title {
@@ -541,8 +547,15 @@ const navItems = computed(() => [
 
 .content {
   flex: 1;
-  padding: 1.5rem;
+  padding: 1rem;
   padding-bottom: 5.5rem;
+}
+
+@media (min-width: 480px) {
+  .content {
+    padding: 1.5rem;
+    padding-bottom: 5.5rem;
+  }
 }
 
 @media (min-width: 768px) {

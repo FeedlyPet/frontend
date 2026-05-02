@@ -154,14 +154,22 @@ body {
 .modal {
     background: var(--bg-card);
     border-radius: 1.5rem;
-    padding: 1.75rem;
+    padding: 1.25rem;
     width: 100%;
     max-width: 420px;
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     border: 1px solid var(--border);
+}
+
+@media (min-width: 480px) {
+    .modal {
+        padding: 1.75rem;
+    }
 }
 
 .modal-header {
@@ -521,11 +529,17 @@ body {
 .auth-card {
     background: var(--bg-card);
     border-radius: 1.5rem;
-    padding: 2.5rem 2rem;
+    padding: 1.75rem 1.25rem;
     width: 100%;
     max-width: 400px;
     box-shadow: var(--shadow-lg);
     border: 1px solid var(--border);
+}
+
+@media (min-width: 480px) {
+    .auth-card {
+        padding: 2.5rem 2rem;
+    }
 }
 
 .auth-logo {
