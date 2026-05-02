@@ -136,10 +136,9 @@ async function savePassword() {
 
 <style scoped>
 .profile-page {
-  max-width: 520px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .loading {
@@ -150,16 +149,16 @@ async function savePassword() {
 .card {
   background: var(--bg-card);
   border-radius: 1.25rem;
-  padding: 1.25rem;
+  padding: 1rem;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 @media (min-width: 480px) {
   .card {
-    padding: 1.75rem;
+    padding: 1.25rem;
   }
 }
 
@@ -186,7 +185,6 @@ async function savePassword() {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 0.25rem;
 }
 
 .btn-primary:hover:not(:disabled) {
