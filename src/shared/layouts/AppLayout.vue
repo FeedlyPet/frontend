@@ -548,13 +548,13 @@ const navItems = computed(() => [
 .content {
   flex: 1;
   padding: 1rem;
-  padding-bottom: 5.5rem;
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 @media (min-width: 480px) {
   .content {
     padding: 1.5rem;
-    padding-bottom: 5.5rem;
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -574,6 +574,7 @@ const navItems = computed(() => [
   border-top: 1px solid var(--sidebar-border);
   z-index: 20;
   transition: background 0.25s ease;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 @media (min-width: 768px) {
@@ -588,12 +589,13 @@ const navItems = computed(() => [
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.6rem 0;
+  padding: 0.65rem 0.25rem;
   color: var(--sidebar-text);
   text-decoration: none;
   position: relative;
   transition: color 0.2s;
-  gap: 0.15rem;
+  gap: 0.2rem;
+  min-width: 0;
 }
 
 .bottom-nav-item--active {
@@ -601,8 +603,12 @@ const navItems = computed(() => [
 }
 
 .bottom-nav-label {
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 500;
   line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 </style>
