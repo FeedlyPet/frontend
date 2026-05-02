@@ -569,7 +569,8 @@ const navItems = computed(() => [
   display: flex;
   position: fixed;
   bottom: 0;
-  inset-x: 0;
+  left: 0;
+  right: 0;
   background: var(--bg-sidebar);
   border-top: 1px solid var(--sidebar-border);
   z-index: 20;
