@@ -6,6 +6,7 @@ import {petsApi} from '@/features/pets/api/pets.api.ts'
 import AppSpinner from '@/shared/components/AppSpinner.vue'
 import {relativeTime, foodLevelColor, speciesIcon} from '@/shared/utils/formatters.ts'
 import {useToast} from '@/shared/composables/use-toast.ts'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
 import {extractErrorMessage} from '@/shared/utils/error-handler.ts'
 import FeedModal from '../components/FeedModal.vue'
 import MqttPasswordModal from '../components/MqttPasswordModal.vue'
@@ -17,6 +18,7 @@ import type {UpdateDeviceDto} from "@/features/devices/api/update-device.dto.ts"
 import type {Pet} from "@/features/pets/api/pet.ts";
 
 const toast = useToast()
+const {t} = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -180,7 +182,7 @@ const portionsLeft = computed(() => {
             <div class="device-meta-row">
               <span class="status-dot" :class="device.isOnline ? 'online' : 'offline'"></span>
               <span class="status-label" :class="device.isOnline ? 'online' : 'offline'">
-                {{ device.isOnline ? 'Online' : 'Offline' }}
+                {{ device.isOnline ? t.online : t.offline }}
               </span>
               <span v-if="device.location" class="meta-sep">·</span>
               <span v-if="device.location" class="meta-text">📍 {{ device.location }}</span>
@@ -190,19 +192,19 @@ const portionsLeft = computed(() => {
             <div v-if="device.pet" class="linked-pet">
               {{ speciesIcon[device.pet.species] ?? '🐾' }} {{ device.pet.name }}
             </div>
-            <div v-else class="linked-pet no-pet">No pet linked</div>
+            <div v-else class="linked-pet no-pet">{{ t.noPetLinked }}</div>
             <div v-if="device.lastSeen" class="last-seen">Last seen {{ relativeTime(device.lastSeen) }}</div>
           </div>
           <div class="header-actions">
-            <button class="btn-edit" @click="openEdit">Edit</button>
-            <button class="btn-delete" @click="confirmDelete = true">Delete</button>
+            <button class="btn-edit" @click="openEdit">{{ t.edit }}</button>
+            <button class="btn-delete" @click="confirmDelete = true">{{ t.delete }}</button>
           </div>
         </div>
       </div>
 
       <div class="section-card">
-        <h3 class="section-title">Food level</h3>
-        <div v-if="!foodLevel" class="no-data">No data available</div>
+        <h3 class="section-title">{{ t.foodLevel }}</h3>
+        <div v-if="!foodLevel" class="no-data">{{ t.noDataAvailable }}</div>
         <template v-else>
           <div class="food-level-big">
             <div class="food-bar-track-big">
@@ -215,42 +217,42 @@ const portionsLeft = computed(() => {
               <span class="food-pct-big" :class="{ low: foodLevel.level < 20 }">
                 <span v-if="foodLevel.level < 20">⚠️ </span>{{ foodLevel.level }}%
               </span>
-              <span v-if="portionsLeft !== null" class="portions-left">~{{ portionsLeft }} portions left</span>
+              <span v-if="portionsLeft !== null" class="portions-left">~{{ portionsLeft }} {{ t.portionsLeft }}</span>
             </div>
-            <p class="food-measured">Measured {{ relativeTime(foodLevel.measuredAt) }}</p>
+            <p class="food-measured">{{ t.measuredAt }} {{ relativeTime(foodLevel.measuredAt) }}</p>
           </div>
         </template>
       </div>
 
       <div class="section-card">
-        <h3 class="section-title">Manual feeding</h3>
-        <p v-if="!device.isOnline" class="offline-note">Device is offline — manual feeding unavailable</p>
+        <h3 class="section-title">{{ t.manualFeeding }}</h3>
+        <p v-if="!device.isOnline" class="offline-note">{{ t.deviceOffline }}</p>
         <button v-else class="btn-feed-big" @click="feedModal = true; feedSuccess = false; portionSize = 100">
-          🍽️ Feed now
+          🍽️ {{ t.feedNow }}
         </button>
       </div>
 
       <div class="section-card">
         <div class="section-header">
-          <h3 class="section-title">Schedules</h3>
-          <RouterLink :to="`/devices/${device.id}/schedules`" class="view-all">Manage →</RouterLink>
+          <h3 class="section-title">{{ t.schedules }}</h3>
+          <RouterLink :to="`/devices/${device.id}/schedules`" class="view-all">{{ t.manage }}</RouterLink>
         </div>
-        <p class="schedule-hint">Set up automatic feeding schedules for this device.</p>
+        <p class="schedule-hint">{{ t.schedulesHint }}</p>
       </div>
 
       <div class="section-card">
         <div class="section-header">
-          <h3 class="section-title">Recent feedings</h3>
-          <RouterLink :to="`/devices/${device.id}/events`" class="view-all">Full history →</RouterLink>
+          <h3 class="section-title">{{ t.recentFeedings }}</h3>
+          <RouterLink :to="`/devices/${device.id}/events`" class="view-all">{{ t.fullHistory }}</RouterLink>
         </div>
-        <div v-if="recentEvents.length === 0" class="no-data">No feeding events yet</div>
+        <div v-if="recentEvents.length === 0" class="no-data">{{ t.noFeedingEvents }}</div>
         <FeedingEventsTable v-else :events="recentEvents"/>
       </div>
 
       <div class="section-card">
-        <h3 class="section-title">MQTT settings</h3>
-        <p class="mqtt-note">Regenerating the password will disconnect the device until it's reconfigured.</p>
-        <button class="btn-regen" @click="regenConfirm = true">🔄 Regenerate MQTT password</button>
+        <h3 class="section-title">{{ t.mqttSettings }}</h3>
+        <p class="mqtt-note">{{ t.mqttNote }}</p>
+        <button class="btn-regen" @click="regenConfirm = true">🔄 {{ t.regenerateMqtt }}</button>
       </div>
     </template>
   </div>
@@ -269,34 +271,34 @@ const portionsLeft = computed(() => {
     <div v-if="editModal" class="modal-backdrop" @click.self="editModal = false">
       <div class="modal">
         <div class="modal-header">
-          <h3>Edit device</h3>
+          <h3>{{ t.editDevice }}</h3>
           <button class="modal-close" @click="editModal = false">✕</button>
         </div>
         <div v-if="editErrors.general" class="form-error-banner">{{ editErrors.general }}</div>
         <form @submit.prevent="submitEdit" class="modal-form">
           <div class="field">
-            <label>Name *</label>
+            <label>{{ t.name }} *</label>
             <input v-model="editForm.name" type="text" :class="{ error: editErrors.name }"/>
             <p v-if="editErrors.name" class="field-error">{{ editErrors.name }}</p>
           </div>
           <div class="field">
-            <label>Location</label>
+            <label>{{ t.location }}</label>
             <input v-model="editForm.location" type="text" placeholder="Kitchen"/>
           </div>
           <div class="field">
-            <label>Linked pet</label>
+            <label>{{ t.linkedPet }}</label>
             <select v-model="editForm.petId" class="select-field">
-              <option :value="null">— Unlink pet —</option>
+              <option :value="null">{{ t.unlinkPet }}</option>
               <option v-for="pet in pets" :key="pet.id" :value="pet.id">
                 {{ speciesIcon[pet.species] ?? '🐾' }} {{ pet.name }}
               </option>
             </select>
           </div>
           <div class="modal-actions">
-            <button type="button" class="btn-cancel" @click="editModal = false">Cancel</button>
+            <button type="button" class="btn-cancel" @click="editModal = false">{{ t.cancel }}</button>
             <button type="submit" class="btn-confirm" :disabled="editLoading">
               <AppSpinner v-if="editLoading"/>
-              {{ editLoading ? 'Saving...' : 'Save' }}
+              {{ editLoading ? t.saving : t.save }}
             </button>
           </div>
         </form>
@@ -312,10 +314,10 @@ const portionsLeft = computed(() => {
         <p class="confirm-text">All schedules and events for this device will also be deleted. This action cannot be
           undone.</p>
         <div class="modal-actions">
-          <button class="btn-cancel" @click="confirmDelete = false">Cancel</button>
+          <button class="btn-cancel" @click="confirmDelete = false">{{ t.cancel }}</button>
           <button class="btn-danger" :disabled="deleteLoading" @click="doDelete">
             <AppSpinner v-if="deleteLoading"/>
-            {{ deleteLoading ? 'Deleting...' : 'Delete' }}
+            {{ deleteLoading ? t.deleting : t.delete }}
           </button>
         </div>
       </div>
@@ -330,10 +332,10 @@ const portionsLeft = computed(() => {
         <p class="confirm-text">The old password will stop working. You'll need to reconfigure the device with the new
           password.</p>
         <div class="modal-actions">
-          <button class="btn-cancel" @click="regenConfirm = false">Cancel</button>
+          <button class="btn-cancel" @click="regenConfirm = false">{{ t.cancel }}</button>
           <button class="btn-danger" :disabled="regenLoading" @click="regeneratePassword">
             <AppSpinner v-if="regenLoading"/>
-            {{ regenLoading ? 'Regenerating...' : 'Regenerate' }}
+            {{ regenLoading ? t.regenerating : t.regenerate }}
           </button>
         </div>
       </div>

@@ -3,6 +3,9 @@ import {RouterLink} from 'vue-router'
 import {relativeTime, foodLevelColor, speciesIcon} from '@/shared/utils/formatters.ts'
 import type {Device} from '@/features/devices/api/device.ts'
 import type {FoodLevel} from '@/features/devices/api/food-level.ts'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
+
+const {t} = useI18n()
 
 defineProps<{
   device: Device
@@ -20,10 +23,10 @@ const emit = defineEmits<{
       <div class="device-status-row">
         <span class="status-dot" :class="device.isOnline ? 'online' : 'offline'"></span>
         <span class="status-label" :class="device.isOnline ? 'online' : 'offline'">
-          {{ device.isOnline ? 'Online' : 'Offline' }}
+          {{ device.isOnline ? t.online : t.offline }}
         </span>
       </div>
-      <RouterLink :to="`/devices/${device.id}`" class="details-link">Details →</RouterLink>
+      <RouterLink :to="`/devices/${device.id}`" class="details-link">{{ t.details }}</RouterLink>
     </div>
 
     <div class="device-name">{{ device.name }}</div>
@@ -32,7 +35,7 @@ const emit = defineEmits<{
     <div v-if="device.pet" class="device-pet">
       {{ speciesIcon[device.pet.species] ?? '🐾' }} {{ device.pet.name }}
     </div>
-    <div v-else class="device-pet no-pet">No pet linked</div>
+    <div v-else class="device-pet no-pet">{{ t.noPetLinked }}</div>
 
     <div class="food-section">
       <div class="food-bar-wrap">
@@ -56,10 +59,10 @@ const emit = defineEmits<{
     <button
         class="btn-feed"
         :disabled="!device.isOnline"
-        :title="device.isOnline ? '' : 'Device is offline'"
+        :title="device.isOnline ? '' : t.deviceOffline"
         @click="emit('feed', device)"
     >
-      {{ device.isOnline ? 'Feed now' : 'Offline' }}
+      {{ device.isOnline ? t.feedNow : t.offline }}
     </button>
   </div>
 </template>

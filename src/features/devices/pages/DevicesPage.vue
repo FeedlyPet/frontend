@@ -8,6 +8,7 @@ import AppSpinner from '@/shared/components/AppSpinner.vue'
 import {speciesIcon} from '@/shared/utils/formatters.ts'
 
 import {useToast} from '@/shared/composables/use-toast.ts'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
 import {useFeedModal} from '../composables/use-feed-modal.ts'
 import {useDebounce} from '@/shared/composables/use-debounce.ts'
 import {extractErrorMessage} from '@/shared/utils/error-handler.ts'
@@ -20,6 +21,7 @@ import type {CreateDeviceDto} from "@/features/devices/api/create-device.dto.ts"
 import type {Pet} from "@/features/pets/api/pet.ts";
 
 const toast = useToast()
+const {t} = useI18n()
 const {
   feedModal,
   feedDevice,
@@ -150,9 +152,9 @@ async function submitRegister() {
         <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>
         </svg>
-        <input v-model="search" type="text" placeholder="Search devices..." class="search-input"/>
+        <input v-model="search" type="text" :placeholder="t.searchDevices" class="search-input"/>
       </div>
-      <button class="btn-add" @click="openRegister">+ Add device</button>
+      <button class="btn-add" @click="openRegister">+ {{ t.addDevice }}</button>
     </div>
 
     <div v-if="loading" class="devices-grid">
@@ -161,10 +163,10 @@ async function submitRegister() {
 
     <div v-else-if="devices.length === 0" class="empty-state">
       <div class="empty-icon">📡</div>
-      <h3>No devices yet</h3>
-      <p v-if="search">No results for "{{ search }}"</p>
+      <h3>{{ t.noDevices }}</h3>
+      <p v-if="search">{{ t.noResults }} "{{ search }}"</p>
       <p v-else>Register your first feeder to get started!</p>
-      <button class="btn-add" @click="openRegister">Add device</button>
+      <button class="btn-add" @click="openRegister">{{ t.addDevice }}</button>
     </div>
 
     <div v-else class="devices-grid">
@@ -199,42 +201,42 @@ async function submitRegister() {
     <div v-if="registerModal" class="modal-backdrop" @click.self="closeRegister">
       <div class="modal">
         <div class="modal-header">
-          <h3>Register device</h3>
+          <h3>{{ t.registerDevice }}</h3>
           <button class="modal-close" @click="closeRegister">✕</button>
         </div>
         <div v-if="registerErrors.general" class="form-error-banner">{{ registerErrors.general }}</div>
         <form @submit.prevent="submitRegister" class="modal-form">
           <div class="field">
-            <label>Hardware Device ID *</label>
+            <label>{{ t.hardwareId }}</label>
             <input v-model="registerForm.deviceId" type="text" placeholder="hw-uuid-123"
                    :class="{ error: registerErrors.deviceId }"/>
             <p v-if="registerErrors.deviceId" class="field-error">{{ registerErrors.deviceId }}</p>
-            <p class="field-hint">Found on the label of your device</p>
+            <p class="field-hint">{{ t.hardwareIdHint }}</p>
           </div>
           <div class="field">
-            <label>Name *</label>
+            <label>{{ t.name }} *</label>
             <input v-model="registerForm.name" type="text" maxlength="100" placeholder="Kitchen feeder"
                    :class="{ error: registerErrors.name }"/>
             <p v-if="registerErrors.name" class="field-error">{{ registerErrors.name }}</p>
           </div>
           <div class="field">
-            <label>Location</label>
+            <label>{{ t.location }}</label>
             <input v-model="registerForm.location" type="text" placeholder="Kitchen"/>
           </div>
           <div class="field">
-            <label>Link to pet</label>
+            <label>{{ t.linkToPet }}</label>
             <select v-model="registerForm.petId" class="select-field">
-              <option :value="undefined">— No pet —</option>
+              <option :value="undefined">{{ t.noPet }}</option>
               <option v-for="pet in pets" :key="pet.id" :value="pet.id">
                 {{ speciesIcon[pet.species] ?? '🐾' }} {{ pet.name }}
               </option>
             </select>
           </div>
           <div class="modal-actions">
-            <button type="button" class="btn-cancel" @click="closeRegister">Cancel</button>
+            <button type="button" class="btn-cancel" @click="closeRegister">{{ t.cancel }}</button>
             <button type="submit" class="btn-confirm" :disabled="registerLoading">
               <AppSpinner v-if="registerLoading"/>
-              {{ registerLoading ? 'Registering...' : 'Register' }}
+              {{ registerLoading ? t.registering : t.register }}
             </button>
           </div>
         </form>
