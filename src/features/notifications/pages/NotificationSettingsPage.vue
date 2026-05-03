@@ -101,14 +101,14 @@ const labels = computed((): Record<keyof NotificationSettings, string> => ({
 }
 
 .back:hover {
-  color: #2C1208;
+  color: var(--text-primary);
 }
 
 .settings-card {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 1.25rem;
   padding: 1.5rem;
-  box-shadow: 0 2px 12px rgba(44, 18, 8, 0.06);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -118,7 +118,7 @@ const labels = computed((): Record<keyof NotificationSettings, string> => ({
   font-family: 'Nunito', sans-serif;
   font-weight: 700;
   font-size: 1rem;
-  color: #2C1208;
+  color: var(--text-primary);
 }
 
 .settings-list {
@@ -132,7 +132,7 @@ const labels = computed((): Record<keyof NotificationSettings, string> => ({
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 0;
-  border-bottom: 1px solid #F5EDE0;
+  border-bottom: 1px solid var(--border);
 }
 
 .setting-row:last-child {
@@ -141,7 +141,7 @@ const labels = computed((): Record<keyof NotificationSettings, string> => ({
 
 .setting-label {
   font-size: 0.9rem;
-  color: #2C1208;
+  color: var(--text-primary);
 }
 
 .toggle {
@@ -150,7 +150,7 @@ const labels = computed((): Record<keyof NotificationSettings, string> => ({
   height: 24px;
   border: none;
   border-radius: 999px;
-  background: #E0D3C0;
+  background: var(--border);
   cursor: pointer;
   transition: background 0.2s;
   padding: 0;
@@ -173,7 +173,7 @@ const labels = computed((): Record<keyof NotificationSettings, string> => ({
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--bg-card);
   transition: transform 0.2s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
