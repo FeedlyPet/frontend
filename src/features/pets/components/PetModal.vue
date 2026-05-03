@@ -19,7 +19,6 @@ const emit = defineEmits<{
 const speciesOptions = [
   {value: 'cat', label: 'Cat'},
   {value: 'dog', label: 'Dog'},
-  {value: 'bird', label: 'Bird'},
   {value: 'other', label: 'Other'},
 ]
 </script>
