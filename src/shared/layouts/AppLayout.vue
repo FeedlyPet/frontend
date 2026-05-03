@@ -146,8 +146,8 @@ const navItems = computed(() => [
         <div class="header-right">
 
           <button class="ctrl-btn" @click="toggleLang"
-                  :title="lang === 'en' ? 'Switch to Ukrainian' : 'Перейти на англійську'">
-            <span class="lang-label">{{ lang === 'en' ? 'UA' : 'EN' }}</span>
+                  :title="lang === 'en' ? 'Switch to Ukrainian' : 'Switch to English'">
+            <span class="lang-label">{{ lang === 'en' ? 'EN' : 'UA' }}</span>
           </button>
 
           <button class="ctrl-btn theme-btn" @click="toggleTheme"

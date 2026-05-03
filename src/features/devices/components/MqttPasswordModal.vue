@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import {ref} from 'vue'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
+
+const {t} = useI18n()
 
 const props = defineProps<{
   password: string
@@ -24,17 +27,17 @@ function copy() {
     <div class="modal-backdrop">
       <div class="modal">
         <div class="modal-header">
-          <h3>{{ title ?? 'MQTT password' }}</h3>
+          <h3>{{ title ?? t.mqttPasswordTitle }}</h3>
         </div>
         <div class="mqtt-warning">
           <span>⚠️</span>
-          <p>Save this password — it won't be shown again!</p>
+          <p>{{ t.mqttSaveWarning }}</p>
         </div>
         <div class="mqtt-password-block">
           <code class="mqtt-password">{{ password }}</code>
-          <button class="btn-copy" @click="copy">{{ copied ? 'Copied ✓' : 'Copy' }}</button>
+          <button class="btn-copy" @click="copy">{{ copied ? t.copied : t.copy }}</button>
         </div>
-        <button class="btn-confirm" @click="emit('close')">Done</button>
+        <button class="btn-confirm" @click="emit('close')">{{ t.done }}</button>
       </div>
     </div>
   </Teleport>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import {formatDateTime, relativeTime} from '@/shared/utils/formatters.ts'
 import type {FeedingEvent} from '@/features/devices/api/feeding-event.ts'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
+
+const {t} = useI18n()
 
 defineProps<{
   events: FeedingEvent[]
@@ -14,11 +17,11 @@ defineProps<{
     <table class="events-table">
       <thead>
       <tr>
-        <th>Time</th>
-        <th v-if="showDevice">Device</th>
-        <th>Type</th>
-        <th>Portion</th>
-        <th>Status</th>
+        <th>{{ t.timeCol }}</th>
+        <th v-if="showDevice">{{ t.deviceCol }}</th>
+        <th>{{ t.typeCol }}</th>
+        <th>{{ t.portionCol }}</th>
+        <th>{{ t.statusCol }}</th>
       </tr>
       </thead>
       <tbody>
@@ -29,7 +32,7 @@ defineProps<{
         <td v-if="showDevice" class="td-device">{{ ev.deviceName ?? ev.deviceId }}</td>
         <td>
           <span class="type-badge" :class="ev.type === 'MANUAL' ? 'manual' : 'auto'">
-            {{ ev.type === 'MANUAL' ? '👆 Manual' : '🤖 Auto' }}
+            {{ ev.type === 'MANUAL' ? t.typeManual : t.typeAuto }}
           </span>
         </td>
         <td class="td-portion">{{ ev.portionSize }}g</td>

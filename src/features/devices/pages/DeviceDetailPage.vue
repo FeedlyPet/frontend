@@ -62,7 +62,7 @@ onMounted(async () => {
     foodLevel.value = fl
     recentEvents.value = events.data
   } catch {
-    error.value = 'Device not found'
+    error.value = t.value.deviceNotFound
   } finally {
     loading.value = false
   }
@@ -90,7 +90,7 @@ async function openEdit() {
 async function submitEdit() {
   editErrors.value = {}
   if (!editForm.value.name) {
-    editErrors.value.name = 'Name is required';
+    editErrors.value.name = t.value.nameRequired;
     return
   }
   editLoading.value = true
@@ -104,7 +104,7 @@ async function submitEdit() {
     device.value = updated
     editModal.value = false
   } catch (e: unknown) {
-    editErrors.value.general = extractErrorMessage(e, 'Failed to save')
+    editErrors.value.general = extractErrorMessage(e, t.value.failedToSave)
   } finally {
     editLoading.value = false
   }
@@ -116,7 +116,7 @@ async function doDelete() {
     await devicesApi.remove(deviceId)
     router.push('/devices')
   } catch {
-    toast.error('Failed to delete device')
+    toast.error(t.value.failedToDeleteDevice)
   } finally {
     deleteLoading.value = false
   }
@@ -134,7 +134,7 @@ async function confirmFeed() {
     const events = await devicesApi.getEvents(deviceId, {limit: 5}).catch(() => ({data: [] as FeedingEvent[]}))
     recentEvents.value = events.data
   } catch {
-    toast.error('Failed to send feed command')
+    toast.error(t.value.failedToSendFeed)
     feedModal.value = false
   } finally {
     feedLoading.value = false
@@ -149,7 +149,7 @@ async function regeneratePassword() {
     regenConfirm.value = false
     showMqttModal.value = true
   } catch {
-    toast.error('Failed to regenerate MQTT password')
+    toast.error(t.value.failedToRegenMqtt)
   } finally {
     regenLoading.value = false
   }
@@ -169,11 +169,11 @@ const portionsLeft = computed(() => {
 
     <div v-else-if="error" class="error-wrap">
       <p>{{ error }}</p>
-      <RouterLink to="/devices" class="btn-back">← Back to devices</RouterLink>
+      <RouterLink to="/devices" class="btn-back">{{ t.backToDevices }}</RouterLink>
     </div>
 
     <template v-else-if="device">
-      <RouterLink to="/devices" class="breadcrumb">← Devices</RouterLink>
+      <RouterLink to="/devices" class="breadcrumb">{{ t.devicesBack }}</RouterLink>
 
       <div class="info-card">
         <div class="info-card-header">
@@ -193,7 +193,7 @@ const portionsLeft = computed(() => {
               {{ speciesIcon[device.pet.species] ?? '🐾' }} {{ device.pet.name }}
             </div>
             <div v-else class="linked-pet no-pet">{{ t.noPetLinked }}</div>
-            <div v-if="device.lastSeen" class="last-seen">Last seen {{ relativeTime(device.lastSeen) }}</div>
+            <div v-if="device.lastSeen" class="last-seen">{{ t.lastSeen }} {{ relativeTime(device.lastSeen) }}</div>
           </div>
           <div class="header-actions">
             <button class="btn-edit" @click="openEdit">{{ t.edit }}</button>
@@ -311,8 +311,7 @@ const portionsLeft = computed(() => {
       <div class="modal confirm-modal">
         <div class="confirm-icon">⚠️</div>
         <h3 class="confirm-title">Delete "{{ device?.name }}"?</h3>
-        <p class="confirm-text">All schedules and events for this device will also be deleted. This action cannot be
-          undone.</p>
+        <p class="confirm-text">{{ t.deleteDeviceConfirm }}</p>
         <div class="modal-actions">
           <button class="btn-cancel" @click="confirmDelete = false">{{ t.cancel }}</button>
           <button class="btn-danger" :disabled="deleteLoading" @click="doDelete">
@@ -328,9 +327,8 @@ const portionsLeft = computed(() => {
     <div v-if="regenConfirm" class="modal-backdrop" @click.self="regenConfirm = false">
       <div class="modal confirm-modal">
         <div class="confirm-icon">🔑</div>
-        <h3 class="confirm-title">Regenerate MQTT password?</h3>
-        <p class="confirm-text">The old password will stop working. You'll need to reconfigure the device with the new
-          password.</p>
+        <h3 class="confirm-title">{{ t.regenMqttTitle }}</h3>
+        <p class="confirm-text">{{ t.regenMqttConfirm }}</p>
         <div class="modal-actions">
           <button class="btn-cancel" @click="regenConfirm = false">{{ t.cancel }}</button>
           <button class="btn-danger" :disabled="regenLoading" @click="regeneratePassword">
@@ -345,7 +343,7 @@ const portionsLeft = computed(() => {
   <MqttPasswordModal
       v-if="showMqttModal"
       :password="newMqttPassword"
-      title="New MQTT password"
+      :title="t.newMqttPassword"
       @close="showMqttModal = false"
   />
 </template>

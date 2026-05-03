@@ -7,12 +7,14 @@ import AppSpinner from '@/shared/components/AppSpinner.vue'
 import {useToast} from '@/shared/composables/use-toast.ts'
 import {useDebounce} from '@/shared/composables/use-debounce.ts'
 import {extractErrorMessage} from '@/shared/utils/error-handler.ts'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
 import PetCard from '../components/PetCard.vue'
 import PetModal from '../components/PetModal.vue'
 import type {CreatePetDto} from "@/features/pets/api/create-pet.dto.ts";
 import type {Pet} from "@/features/pets/api/pet.ts";
 
 const toast = useToast()
+const {t} = useI18n()
 
 const router = useRouter()
 const route = useRoute()
@@ -50,7 +52,7 @@ async function fetchPets() {
     pets.value = res.data
     total.value = res.meta.total
   } catch {
-    toast.error('Failed to load pets')
+    toast.error(t.value.failedToLoad)
   } finally {
     loading.value = false
   }
@@ -103,10 +105,10 @@ function closeModal() {
 
 function validateForm(): boolean {
   modalErrors.value = {}
-  if (!form.value.name) modalErrors.value.name = 'Name is required'
-  else if (form.value.name.length > 100) modalErrors.value.name = 'Max 100 characters'
+  if (!form.value.name) modalErrors.value.name = t.value.nameRequired
+  else if (form.value.name.length > 100) modalErrors.value.name = t.value.nameTooLong
   if (form.value.weight != null && (form.value.weight < 0.1 || form.value.weight > 200))
-    modalErrors.value.weight = 'Weight must be 0.1–200 kg'
+    modalErrors.value.weight = t.value.weightRange
   return Object.keys(modalErrors.value).length === 0
 }
 
@@ -119,16 +121,16 @@ async function submitModal() {
       const updated = await petsApi.update(editPet.value.id, dto)
       const idx = pets.value.findIndex(p => p.id === editPet.value!.id)
       if (idx !== -1) pets.value[idx] = updated
-      toast.success('Pet updated')
+      toast.success(t.value.petUpdated)
     } else {
       const created = await petsApi.create(dto)
       total.value++
       if (pets.value.length < limit) pets.value.unshift(created)
-      toast.success('Pet added')
+      toast.success(t.value.petAdded)
     }
     closeModal()
   } catch (e: unknown) {
-    modalErrors.value.general = extractErrorMessage(e, 'Failed to save')
+    modalErrors.value.general = extractErrorMessage(e, t.value.failedToSave)
   } finally {
     modalLoading.value = false
   }
@@ -142,9 +144,9 @@ async function confirmDelete() {
     pets.value = pets.value.filter(p => p.id !== confirmPet.value!.id)
     total.value--
     confirmPet.value = null
-    toast.success('Pet deleted')
+    toast.success(t.value.petDeleted)
   } catch {
-    toast.error('Failed to delete pet')
+    toast.error(t.value.failedToDelete)
   } finally {
     deleteLoading.value = false
   }
@@ -158,22 +160,22 @@ async function confirmDelete() {
         <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>
         </svg>
-        <input v-model="search" type="text" placeholder="Search pets..." class="search-input"/>
+        <input v-model="search" type="text" :placeholder="t.searchPets" class="search-input"/>
       </div>
 
       <div class="sort-wrap">
         <select v-model="sortBy" class="select">
-          <option value="name">Name</option>
-          <option value="species">Species</option>
-          <option value="weight">Weight</option>
-          <option value="createdAt">Date added</option>
+          <option value="name">{{ t.sortName }}</option>
+          <option value="species">{{ t.sortSpecies }}</option>
+          <option value="weight">{{ t.sortWeight }}</option>
+          <option value="createdAt">{{ t.sortDateAdded }}</option>
         </select>
         <button class="sort-dir-btn" @click="sortOrder = sortOrder === 'ASC' ? 'DESC' : 'ASC'">
           {{ sortOrder === 'ASC' ? '↑' : '↓' }}
         </button>
       </div>
 
-      <button class="btn-add" @click="openCreate">+ Add pet</button>
+      <button class="btn-add" @click="openCreate">+ {{ t.addPet }}</button>
     </div>
 
     <div v-if="loading" class="pets-grid">
@@ -182,10 +184,10 @@ async function confirmDelete() {
 
     <div v-else-if="pets.length === 0" class="empty-state">
       <div class="empty-icon">🐾</div>
-      <h3>No pets yet</h3>
-      <p v-if="search">No results for "{{ search }}"</p>
-      <p v-else>Add your first pet to get started!</p>
-      <button class="btn-add" @click="openCreate">Add pet</button>
+      <h3>{{ t.noPetsYet }}</h3>
+      <p v-if="search">{{ t.noResults }} "{{ search }}"</p>
+      <p v-else>{{ t.addFirstPet }}</p>
+      <button class="btn-add" @click="openCreate">{{ t.addPet }}</button>
     </div>
 
     <div v-else class="pets-grid">
@@ -221,12 +223,12 @@ async function confirmDelete() {
       <div class="modal confirm-modal">
         <div class="confirm-icon">⚠️</div>
         <h3 class="confirm-title">Delete "{{ confirmPet.name }}"?</h3>
-        <p class="confirm-text">This action cannot be undone.</p>
+        <p class="confirm-text">{{ t.thisActionCannotBeUndone }}</p>
         <div class="modal-actions">
-          <button class="btn-cancel" @click="confirmPet = null">Cancel</button>
+          <button class="btn-cancel" @click="confirmPet = null">{{ t.cancel }}</button>
           <button class="btn-danger" :disabled="deleteLoading" @click="confirmDelete">
             <AppSpinner v-if="deleteLoading"/>
-            {{ deleteLoading ? 'Deleting...' : 'Delete' }}
+            {{ deleteLoading ? t.deleting : t.delete }}
           </button>
         </div>
       </div>

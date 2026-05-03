@@ -70,7 +70,7 @@ async function fetchDevices() {
     )
     for (const {id, fl} of levels) foodLevels.value[id] = fl
   } catch {
-    toast.error('Failed to load devices')
+    toast.error(t.value.failedToLoadDevices)
   } finally {
     loading.value = false
   }
@@ -116,8 +116,8 @@ function closeRegister() {
 
 async function submitRegister() {
   registerErrors.value = {}
-  if (!registerForm.value.deviceId) registerErrors.value.deviceId = 'Device ID is required'
-  if (!registerForm.value.name) registerErrors.value.name = 'Name is required'
+  if (!registerForm.value.deviceId) registerErrors.value.deviceId = t.value.deviceIdRequired
+  if (!registerForm.value.name) registerErrors.value.name = t.value.nameRequired
   if (Object.keys(registerErrors.value).length) return
 
   registerLoading.value = true
@@ -132,11 +132,11 @@ async function submitRegister() {
     mqttPassword.value = result.mqttPassword
     closeRegister()
     showMqttModal.value = true
-    toast.success('Device registered successfully')
+    toast.success(t.value.deviceRegistered)
     fetchDevices()
   } catch (e: unknown) {
-    if (axios.isAxiosError(e) && e.response?.status === 409) registerErrors.value.deviceId = 'Device with this ID is already registered'
-    else registerErrors.value.general = extractErrorMessage(e, 'Registration failed')
+    if (axios.isAxiosError(e) && e.response?.status === 409) registerErrors.value.deviceId = t.value.deviceAlreadyRegistered
+    else registerErrors.value.general = extractErrorMessage(e, t.value.registrationFailed)
   } finally {
     registerLoading.value = false
   }
@@ -165,7 +165,7 @@ async function submitRegister() {
       <div class="empty-icon">📡</div>
       <h3>{{ t.noDevices }}</h3>
       <p v-if="search">{{ t.noResults }} "{{ search }}"</p>
-      <p v-else>Register your first feeder to get started!</p>
+      <p v-else>{{ t.registerFirstFeeder }}</p>
       <button class="btn-add" @click="openRegister">{{ t.addDevice }}</button>
     </div>
 
@@ -247,7 +247,7 @@ async function submitRegister() {
   <MqttPasswordModal
       v-if="showMqttModal"
       :password="mqttPassword"
-      title="Device registered!"
+      :title="t.deviceRegisteredTitle"
       @close="showMqttModal = false"
   />
 </template>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import AppSpinner from '@/shared/components/AppSpinner.vue'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
+
+const {t} = useI18n()
 
 defineProps<{
   deviceName?: string
@@ -20,16 +23,16 @@ const emit = defineEmits<{
     <div class="modal-backdrop" @click.self="emit('close')">
       <div class="modal">
         <div class="modal-header">
-          <h3>Feed now{{ deviceName ? ` — ${deviceName}` : '' }}</h3>
+          <h3>{{ t.feedNowTitle }}{{ deviceName ? ` — ${deviceName}` : '' }}</h3>
           <button class="modal-close" @click="emit('close')">✕</button>
         </div>
         <div v-if="success" class="feed-success">
           <span class="success-icon">✅</span>
-          <p>Command sent!</p>
+          <p>{{ t.commandSent }}</p>
         </div>
         <template v-else>
           <div class="portion-field">
-            <label>Portion size: <strong>{{ portionSize }}g</strong></label>
+            <label>{{ t.portionSize }}: <strong>{{ portionSize }}g</strong></label>
             <input
                 type="range"
                 :value="portionSize"
@@ -40,10 +43,10 @@ const emit = defineEmits<{
             <div class="slider-labels"><span>10g</span><span>500g</span></div>
           </div>
           <div class="modal-actions">
-            <button class="btn-cancel" @click="emit('close')">Cancel</button>
+            <button class="btn-cancel" @click="emit('close')">{{ t.cancel }}</button>
             <button class="btn-confirm" :disabled="loading" @click="emit('confirm')">
               <AppSpinner v-if="loading"/>
-              {{ loading ? 'Sending...' : 'Confirm' }}
+              {{ loading ? t.sending : t.confirm }}
             </button>
           </div>
         </template>

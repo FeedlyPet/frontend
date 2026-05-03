@@ -14,8 +14,10 @@ import type {Device} from "@/features/devices/api/device.ts";
 import type {FoodLevel} from "@/features/devices/api/food-level.ts";
 import type {FeedingEvent} from "@/features/devices/api/feeding-event.ts";
 import type {StatisticsResponse} from "@/features/statistics/api/statistics-response.ts";
+import {useI18n} from '@/shared/composables/use-i18n.ts'
 
 const toast = useToast()
+const {t} = useI18n()
 const {
   feedModal,
   feedDevice,
@@ -96,7 +98,7 @@ onMounted(async () => {
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     recentEvents.value = allEvents.slice(0, 5)
   } catch {
-    toast.error('Failed to load dashboard data')
+    toast.error(t.value.failedToLoad)
   } finally {
     loading.value = false
   }
@@ -106,7 +108,7 @@ onMounted(async () => {
 
 <template>
   <div class="dashboard">
-    <h1 class="greeting">Hello, {{ userName || '...' }}!</h1>
+    <h1 class="greeting">{{ t.hello }}, {{ userName || '...' }}!</h1>
 
     <template v-if="loading">
       <div class="summary-grid">
@@ -123,7 +125,7 @@ onMounted(async () => {
           <div class="summary-icon">🐾</div>
           <div class="summary-body">
             <p class="summary-value">{{ petsTotal }}</p>
-            <p class="summary-label">Pets</p>
+            <p class="summary-label">{{ t.petsLabel }}</p>
           </div>
         </div>
 
@@ -131,7 +133,7 @@ onMounted(async () => {
           <div class="summary-icon">📡</div>
           <div class="summary-body">
             <p class="summary-value">{{ onlineCount }} / {{ devices.length }}</p>
-            <p class="summary-label">Devices online</p>
+            <p class="summary-label">{{ t.devicesOnline }}</p>
           </div>
         </div>
 
@@ -144,7 +146,7 @@ onMounted(async () => {
             </template>
             <template v-else>
               <p class="summary-value">—</p>
-              <p class="summary-label">Last feeding</p>
+              <p class="summary-label">{{ t.lastFeeding }}</p>
             </template>
           </div>
         </div>
@@ -153,34 +155,34 @@ onMounted(async () => {
           <div class="summary-icon">🔔</div>
           <div class="summary-body">
             <p class="summary-value">{{ unreadCount }}</p>
-            <p class="summary-label">Unread alerts</p>
+            <p class="summary-label">{{ t.unreadAlerts }}</p>
           </div>
         </RouterLink>
       </div>
 
       <div v-if="weekStats" class="section-card">
         <div class="section-header">
-          <h2 class="section-title">This week</h2>
-          <RouterLink v-if="devices[0]" :to="`/devices/${devices[0].id}/statistics`" class="view-all">Full stats →
+          <h2 class="section-title">{{ t.thisWeek }}</h2>
+          <RouterLink v-if="devices[0]" :to="`/devices/${devices[0].id}/statistics`" class="view-all">{{ t.fullStats }}
           </RouterLink>
         </div>
 
         <div class="week-chips">
           <div class="week-chip">
             <span class="chip-value">{{ weekStats.totalFeedings }}</span>
-            <span class="chip-label">feedings</span>
+            <span class="chip-label">{{ t.feedings }}</span>
           </div>
           <div class="week-chip">
             <span class="chip-value">{{ weekStats.totalFood }}g</span>
-            <span class="chip-label">food served</span>
+            <span class="chip-label">{{ t.foodServed }}</span>
           </div>
           <div class="week-chip">
             <span class="chip-value">{{ weekStats.averagePortion }}g</span>
-            <span class="chip-label">avg portion</span>
+            <span class="chip-label">{{ t.avgPortion }}</span>
           </div>
           <div class="week-chip" :class="{ 'chip-warn': successRate !== null && successRate < 80 }">
             <span class="chip-value">{{ successRate !== null ? successRate + '%' : '—' }}</span>
-            <span class="chip-label">success rate</span>
+            <span class="chip-label">{{ t.successRate }}</span>
           </div>
         </div>
 
@@ -189,7 +191,7 @@ onMounted(async () => {
               v-for="d in weekStats.dailyBreakdown"
               :key="d.date"
               class="week-bar-group"
-              :title="`${dayLabel(d.date)}: ${d.feedings} feedings, ${d.food}g`"
+              :title="`${dayLabel(d.date)}: ${d.feedings} ${t.feedings}, ${d.food}g`"
           >
             <div class="week-bar-track">
               <div
@@ -206,13 +208,13 @@ onMounted(async () => {
 
       <div class="section-card">
         <div class="section-header">
-          <h2 class="section-title">Devices</h2>
-          <RouterLink to="/devices" class="view-all">View all →</RouterLink>
+          <h2 class="section-title">{{ t.devicesTitle }}</h2>
+          <RouterLink to="/devices" class="view-all">{{ t.viewAll }}</RouterLink>
         </div>
 
         <div v-if="devices.length === 0" class="empty-state">
-          <p>No devices yet.</p>
-          <RouterLink to="/devices" class="btn-primary">Add device</RouterLink>
+          <p>{{ t.noDevicesYet }}</p>
+          <RouterLink to="/devices" class="btn-primary">{{ t.addDevice }}</RouterLink>
         </div>
 
         <div v-else class="devices-list">
@@ -242,9 +244,9 @@ onMounted(async () => {
             <button
                 class="btn-feed"
                 :disabled="!device.isOnline"
-                :title="device.isOnline ? '' : 'Device is offline'"
+                :title="device.isOnline ? '' : t.deviceIsOffline"
                 @click="openFeedModal(device)"
-            >Feed now
+            >{{ t.feedNow }}
             </button>
           </div>
         </div>
@@ -252,11 +254,11 @@ onMounted(async () => {
 
       <div class="section-card">
         <div class="section-header">
-          <h2 class="section-title">Recent feedings</h2>
+          <h2 class="section-title">{{ t.recentFeedingsTitle }}</h2>
         </div>
 
         <div v-if="recentEvents.length === 0" class="empty-state">
-          <p>No feeding events yet.</p>
+          <p>{{ t.noFeedingEventsYet }}</p>
         </div>
 
         <FeedingEventsTable v-else :events="recentEvents" :show-device="true" time-format="relative"/>
