@@ -5,9 +5,11 @@ import {usersApi} from '../api/users.api.ts'
 import AppSpinner from '@/shared/components/AppSpinner.vue'
 import TimezoneSelect from '@/shared/components/TimezoneSelect.vue'
 import {useToast} from '@/shared/composables/use-toast.ts'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
 import {extractErrorMessage} from '@/shared/utils/error-handler.ts'
 
 const toast = useToast()
+const {t} = useI18n()
 
 const profile = ref({name: '', email: '', timezone: ''})
 const loading = ref(true)
@@ -25,7 +27,7 @@ onMounted(async () => {
     profile.value.email = data.email
     profile.value.timezone = data.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone
   } catch {
-    toast.error('Failed to load profile')
+    toast.error(t.value.failedToLoadProfile)
   } finally {
     loading.value = false
   }
@@ -39,7 +41,7 @@ async function saveProfile() {
       email: profile.value.email,
       timezone: profile.value.timezone
     })
-    toast.success('Profile saved')
+    toast.success(t.value.profileSaved)
     const stored = localStorage.getItem('user')
     if (stored) {
       const u = JSON.parse(stored)
@@ -48,7 +50,7 @@ async function saveProfile() {
       localStorage.setItem('user', JSON.stringify(u))
     }
   } catch (e: unknown) {
-    toast.error(extractErrorMessage(e, 'Failed to save profile'))
+    toast.error(extractErrorMessage(e, t.value.failedToSaveProfile))
   } finally {
     savingProfile.value = false
   }
@@ -56,24 +58,24 @@ async function saveProfile() {
 
 async function savePassword() {
   if (newPassword.value !== confirmPassword.value) {
-    toast.error('Passwords do not match')
+    toast.error(t.value.passwordsDoNotMatch)
     return
   }
   if (newPassword.value.length < 8 || !/[a-zA-Z]/.test(newPassword.value) || !/\d/.test(newPassword.value)) {
-    toast.error('Password must be at least 8 characters and contain a letter and a number')
+    toast.error(t.value.passwordTooWeak)
     return
   }
   savingPassword.value = true
   try {
     await usersApi.changePassword({currentPassword: currentPassword.value, newPassword: newPassword.value})
-    toast.success('Password changed')
+    toast.success(t.value.passwordChanged)
     currentPassword.value = ''
     newPassword.value = ''
     confirmPassword.value = ''
   } catch (e: unknown) {
     toast.error(axios.isAxiosError(e) && e.response?.status === 401
-        ? 'Incorrect current password'
-        : extractErrorMessage(e, 'Failed to change password'))
+        ? t.value.incorrectPassword
+        : extractErrorMessage(e, t.value.failedToChangePassword))
   } finally {
     savingPassword.value = false
   }
@@ -83,50 +85,50 @@ async function savePassword() {
 <template>
   <div class="profile-page">
 
-    <div v-if="loading" class="loading">Loading...</div>
+    <div v-if="loading" class="loading">{{ t.loading }}</div>
 
     <template v-else>
       <section class="card">
-        <h2 class="card-title">Personal information</h2>
+        <h2 class="card-title">{{ t.personalInfo }}</h2>
 
         <div class="field">
-          <label>Name</label>
+          <label>{{ t.nameField2 }}</label>
           <input v-model="profile.name" type="text" placeholder="Your name"/>
         </div>
         <div class="field">
-          <label>Email</label>
+          <label>{{ t.emailField }}</label>
           <input v-model="profile.email" type="email" placeholder="you@example.com"/>
         </div>
         <div class="field">
-          <label>Timezone</label>
+          <label>{{ t.timezoneField }}</label>
           <TimezoneSelect v-model="profile.timezone" :disabled="savingProfile"/>
         </div>
 
         <button @click="saveProfile" :disabled="savingProfile" class="btn-primary">
           <AppSpinner v-if="savingProfile"/>
-          {{ savingProfile ? 'Saving...' : 'Save changes' }}
+          {{ savingProfile ? t.saving : t.saveChanges }}
         </button>
       </section>
 
       <section class="card">
-        <h2 class="card-title">Change password</h2>
+        <h2 class="card-title">{{ t.changePassword }}</h2>
 
         <div class="field">
-          <label>Current password</label>
+          <label>{{ t.currentPassword }}</label>
           <input v-model="currentPassword" type="password" autocomplete="current-password" placeholder="••••••••"/>
         </div>
         <div class="field">
-          <label>New password</label>
+          <label>{{ t.newPassword }}</label>
           <input v-model="newPassword" type="password" autocomplete="new-password" placeholder="••••••••"/>
         </div>
         <div class="field">
-          <label>Confirm new password</label>
+          <label>{{ t.confirmNewPassword }}</label>
           <input v-model="confirmPassword" type="password" autocomplete="new-password" placeholder="••••••••"/>
         </div>
 
         <button @click="savePassword" :disabled="savingPassword" class="btn-primary">
           <AppSpinner v-if="savingPassword"/>
-          {{ savingPassword ? 'Saving...' : 'Change password' }}
+          {{ savingPassword ? t.saving : t.changePassword }}
         </button>
       </section>
     </template>

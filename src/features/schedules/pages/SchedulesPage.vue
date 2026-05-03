@@ -6,12 +6,14 @@ import {DAYS, DAY_LABELS} from '../api/day.ts'
 import AppSpinner from '@/shared/components/AppSpinner.vue'
 import type {Day} from '../api/day.ts'
 import {useToast} from '@/shared/composables/use-toast.ts'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
 import {extractErrorMessage} from '@/shared/utils/error-handler.ts'
 import type {Schedule} from "@/features/schedules/api/schedule.ts";
 import type {CreateScheduleDto} from "@/features/schedules/api/create-schedule.dto.ts";
 import type {UpdateScheduleDto} from "@/features/schedules/api/update-schedule.dto.ts";
 
 const toast = useToast()
+const {t} = useI18n()
 
 const route = useRoute()
 const deviceId = route.params.deviceId as string
@@ -45,7 +47,7 @@ async function fetchSchedules() {
     const res = await schedulesApi.getAll(deviceId, {sortBy: 'feedingTime', sortOrder: 'ASC'})
     schedules.value = res.data
   } catch {
-    toast.error('Failed to load schedules')
+    toast.error(t.value.failedToLoadSchedules)
   } finally {
     loading.value = false
   }
@@ -86,11 +88,11 @@ function selectAllDays() {
 
 function validateForm(): boolean {
   modalErrors.value = {}
-  if (!form.value.feedingTime) modalErrors.value.feedingTime = 'Time is required'
+  if (!form.value.feedingTime) modalErrors.value.feedingTime = t.value.timeRequired
   if (form.value.portionSize < 10 || form.value.portionSize > 500)
-    modalErrors.value.portionSize = 'Portion must be 10–500 g'
+    modalErrors.value.portionSize = t.value.portionRange
   if (form.value.daysOfWeek.length === 0)
-    modalErrors.value.daysOfWeek = 'Select at least one day'
+    modalErrors.value.daysOfWeek = t.value.selectOneDay
   return Object.keys(modalErrors.value).length === 0
 }
 
@@ -108,16 +110,16 @@ async function submitModal() {
       const updated = await schedulesApi.update(editSchedule.value.id, dto as UpdateScheduleDto)
       const idx = schedules.value.findIndex(s => s.id === editSchedule.value!.id)
       if (idx !== -1) schedules.value[idx] = updated
-      toast.success('Schedule updated')
+      toast.success(t.value.scheduleUpdated)
     } else {
       const created = await schedulesApi.create(deviceId, dto)
       schedules.value.push(created)
       schedules.value.sort((a, b) => a.feedingTime.localeCompare(b.feedingTime))
-      toast.success('Schedule added')
+      toast.success(t.value.scheduleAdded)
     }
     closeModal()
   } catch (e: unknown) {
-    modalErrors.value.general = extractErrorMessage(e, 'Failed to save')
+    modalErrors.value.general = extractErrorMessage(e, t.value.failedToSave)
   } finally {
     modalLoading.value = false
   }
@@ -132,7 +134,7 @@ async function toggle(s: Schedule) {
     s.isActive = updated.isActive
   } catch {
     s.isActive = prev
-    toast.error('Failed to toggle schedule')
+    toast.error(t.value.failedToToggleSchedule)
   } finally {
     togglingId.value = null
   }
@@ -145,29 +147,32 @@ async function confirmDelete() {
     await schedulesApi.remove(confirmSchedule.value.id)
     schedules.value = schedules.value.filter(s => s.id !== confirmSchedule.value!.id)
     confirmSchedule.value = null
-    toast.success('Schedule deleted')
+    toast.success(t.value.scheduleDeleted)
   } catch {
-    toast.error('Failed to delete schedule')
+    toast.error(t.value.failedToDeleteSchedule)
   } finally {
     deleteLoading.value = false
   }
 }
+
+const emptyMessage = computed(() => {
+  if (filterActive.value === 'active') return t.value.noActiveSchedules
+  if (filterActive.value === 'inactive') return t.value.noInactiveSchedules
+  return t.value.noSchedules
+})
 </script>
 
 <template>
   <div class="schedules-page">
-    <RouterLink :to="`/devices/${deviceId}`" class="breadcrumb">← Device</RouterLink>
+    <RouterLink :to="`/devices/${deviceId}`" class="breadcrumb">{{ t.devicesBack }}</RouterLink>
 
     <div class="toolbar">
       <div class="filter-tabs">
-        <button class="tab-btn" :class="{ active: filterActive === 'all' }" @click="filterActive = 'all'">All</button>
-        <button class="tab-btn" :class="{ active: filterActive === 'active' }" @click="filterActive = 'active'">Active
-        </button>
-        <button class="tab-btn" :class="{ active: filterActive === 'inactive' }" @click="filterActive = 'inactive'">
-          Inactive
-        </button>
+        <button class="tab-btn" :class="{ active: filterActive === 'all' }" @click="filterActive = 'all'">{{ t.filterAll }}</button>
+        <button class="tab-btn" :class="{ active: filterActive === 'active' }" @click="filterActive = 'active'">{{ t.filterActive }}</button>
+        <button class="tab-btn" :class="{ active: filterActive === 'inactive' }" @click="filterActive = 'inactive'">{{ t.filterInactive }}</button>
       </div>
-      <button class="btn-add" @click="openCreate">+ Add schedule</button>
+      <button class="btn-add" @click="openCreate">+ {{ t.addSchedule }}</button>
     </div>
 
     <div v-if="loading" class="sched-list">
@@ -176,10 +181,9 @@ async function confirmDelete() {
 
     <div v-else-if="filtered.length === 0" class="empty-state">
       <div class="empty-icon">📅</div>
-      <h3>No schedules</h3>
-      <p v-if="filterActive !== 'all'">No {{ filterActive }} schedules</p>
-      <p v-else>Add your first feeding schedule!</p>
-      <button v-if="filterActive === 'all'" class="btn-add" @click="openCreate">Add schedule</button>
+      <h3>{{ emptyMessage }}</h3>
+      <p v-if="filterActive === 'all'">{{ t.addFirstSchedule }}</p>
+      <button v-if="filterActive === 'all'" class="btn-add" @click="openCreate">{{ t.addSchedule }}</button>
     </div>
 
     <div v-else class="sched-list">
@@ -202,17 +206,17 @@ async function confirmDelete() {
               :class="{ on: s.isActive }"
               :disabled="togglingId === s.id"
               @click="toggle(s)"
-              :title="s.isActive ? 'Disable' : 'Enable'"
+              :title="s.isActive ? t.disableSchedule : t.enableSchedule"
           >
             <span class="toggle-knob"></span>
           </button>
-          <button class="icon-btn" title="Edit" @click="openEdit(s)">
+          <button class="icon-btn" :title="t.edit" @click="openEdit(s)">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15">
               <path stroke-linecap="round" stroke-linejoin="round"
                     d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H9v-2a2 2 0 01.586-1.414z"/>
             </svg>
           </button>
-          <button class="icon-btn danger" title="Delete" @click="confirmSchedule = s">
+          <button class="icon-btn danger" :title="t.delete" @click="confirmSchedule = s">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15">
               <path stroke-linecap="round" stroke-linejoin="round"
                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m-7 0a1 1 0 011-1h4a1 1 0 011 1m-6 0h6"/>
@@ -227,20 +231,20 @@ async function confirmDelete() {
     <div v-if="showModal" class="modal-backdrop" @click.self="closeModal">
       <div class="modal">
         <div class="modal-header">
-          <h3>{{ editSchedule ? 'Edit schedule' : 'Add schedule' }}</h3>
+          <h3>{{ editSchedule ? t.editSchedule : t.addSchedule }}</h3>
           <button class="modal-close" @click="closeModal">✕</button>
         </div>
         <div v-if="modalErrors.general" class="form-error-banner">{{ modalErrors.general }}</div>
         <form @submit.prevent="submitModal" class="modal-form">
 
           <div class="field">
-            <label>Feeding time *</label>
+            <label>{{ t.feedingTime }}</label>
             <input v-model="form.feedingTime" type="time" :class="{ error: modalErrors.feedingTime }"/>
             <p v-if="modalErrors.feedingTime" class="field-error">{{ modalErrors.feedingTime }}</p>
           </div>
 
           <div class="field">
-            <label>Portion size (g) *</label>
+            <label>{{ t.portionSizeField }}</label>
             <input v-model.number="form.portionSize" type="number" min="10" max="500" step="10"
                    :class="{ error: modalErrors.portionSize }"/>
             <p v-if="modalErrors.portionSize" class="field-error">{{ modalErrors.portionSize }}</p>
@@ -248,8 +252,8 @@ async function confirmDelete() {
 
           <div class="field">
             <div class="days-label-row">
-              <label>Days *</label>
-              <button type="button" class="everyday-btn" @click="selectAllDays">Every day</button>
+              <label>{{ t.daysField }}</label>
+              <button type="button" class="everyday-btn" @click="selectAllDays">{{ t.everyDay }}</button>
             </div>
             <div class="days-picker">
               <button
@@ -266,7 +270,7 @@ async function confirmDelete() {
           </div>
 
           <div class="field toggle-field">
-            <label>Active</label>
+            <label>{{ t.activeField }}</label>
             <button
                 type="button"
                 class="toggle-btn"
@@ -278,10 +282,10 @@ async function confirmDelete() {
           </div>
 
           <div class="modal-actions">
-            <button type="button" class="btn-cancel" @click="closeModal">Cancel</button>
+            <button type="button" class="btn-cancel" @click="closeModal">{{ t.cancel }}</button>
             <button type="submit" class="btn-confirm" :disabled="modalLoading">
               <AppSpinner v-if="modalLoading"/>
-              {{ modalLoading ? 'Saving...' : (editSchedule ? 'Save changes' : 'Add schedule') }}
+              {{ modalLoading ? t.saving : (editSchedule ? t.saveChanges : t.addSchedule) }}
             </button>
           </div>
         </form>
@@ -293,14 +297,13 @@ async function confirmDelete() {
     <div v-if="confirmSchedule" class="modal-backdrop" @click.self="confirmSchedule = null">
       <div class="modal confirm-modal">
         <div class="confirm-icon">⚠️</div>
-        <h3 class="confirm-title">Delete schedule?</h3>
-        <p class="confirm-text">{{ confirmSchedule.feedingTime }} · {{ confirmSchedule.portionSize }}g. This action
-          cannot be undone.</p>
+        <h3 class="confirm-title">{{ t.deleteScheduleTitle }}</h3>
+        <p class="confirm-text">{{ confirmSchedule.feedingTime }} · {{ confirmSchedule.portionSize }}g. {{ t.thisActionCannotBeUndone }}</p>
         <div class="modal-actions">
-          <button class="btn-cancel" @click="confirmSchedule = null">Cancel</button>
+          <button class="btn-cancel" @click="confirmSchedule = null">{{ t.cancel }}</button>
           <button class="btn-danger" :disabled="deleteLoading" @click="confirmDelete">
             <AppSpinner v-if="deleteLoading"/>
-            {{ deleteLoading ? 'Deleting...' : 'Delete' }}
+            {{ deleteLoading ? t.deleting : t.delete }}
           </button>
         </div>
       </div>

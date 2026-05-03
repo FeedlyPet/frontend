@@ -3,9 +3,11 @@ import {ref, onMounted, computed} from 'vue'
 import {notificationsApi} from '../api/notifications.api.ts'
 import {relativeTime} from '@/shared/utils/formatters.ts'
 import {useToast} from '@/shared/composables/use-toast.ts'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
 import type {Notification} from "@/features/notifications/api/notification.ts";
 
 const toast = useToast()
+const {t} = useI18n()
 
 const notifications = ref<Notification[]>([])
 const loading = ref(true)
@@ -21,13 +23,13 @@ const deletingId = ref<string | null>(null)
 
 const totalPages = computed(() => Math.ceil(total.value / limit))
 
-const typeOptions = [
-  {value: 'all', label: 'All types'},
-  {value: 'FEEDING_SUCCESS', label: '✅ Feeding success'},
-  {value: 'FEEDING_FAILED', label: '❌ Feeding failed'},
-  {value: 'LOW_FOOD_LEVEL', label: '⚠️ Low food level'},
-  {value: 'DEVICE_STATUS', label: '📡 Device status'},
-]
+const typeOptions = computed(() => [
+  {value: 'all', label: t.value.notifTypeAll},
+  {value: 'FEEDING_SUCCESS', label: t.value.notifTypeSuccess},
+  {value: 'FEEDING_FAILED', label: t.value.notifTypeFailed},
+  {value: 'LOW_FOOD_LEVEL', label: t.value.notifTypeLowFood},
+  {value: 'DEVICE_STATUS', label: t.value.notifTypeDevice},
+])
 
 const typeIcon: Record<string, string> = {
   FEEDING_SUCCESS: '✅',
@@ -54,7 +56,7 @@ async function fetchNotifications() {
     notifications.value = res.data
     total.value = res.meta.total
   } catch {
-    toast.error('Failed to load notifications')
+    toast.error(t.value.failedToLoadNotifications)
   } finally {
     loading.value = false
   }
@@ -68,7 +70,7 @@ async function markRead(n: Notification) {
     await notificationsApi.markRead(n.id)
     n.isRead = true
   } catch {
-    toast.error('Failed to mark as read')
+    toast.error(t.value.failedToMarkRead)
   }
 }
 
@@ -79,9 +81,9 @@ async function markAllRead() {
     notifications.value.forEach(n => {
       n.isRead = true
     })
-    toast.success('All marked as read')
+    toast.success(t.value.allMarkedRead)
   } catch {
-    toast.error('Failed to mark all as read')
+    toast.error(t.value.failedToMarkAllRead)
   } finally {
     markingAll.value = false
   }
@@ -94,7 +96,7 @@ async function remove(n: Notification) {
     notifications.value = notifications.value.filter(x => x.id !== n.id)
     total.value--
   } catch {
-    toast.error('Failed to delete notification')
+    toast.error(t.value.failedToDeleteNotification)
   } finally {
     deletingId.value = null
   }
@@ -111,19 +113,19 @@ function onFilterChange() {
     <div class="toolbar">
       <div class="filters">
         <select v-model="filterRead" @change="onFilterChange" class="select">
-          <option value="all">All</option>
-          <option value="unread">Unread</option>
-          <option value="read">Read</option>
+          <option value="all">{{ t.filterAll2 }}</option>
+          <option value="unread">{{ t.filterUnread }}</option>
+          <option value="read">{{ t.filterRead }}</option>
         </select>
         <select v-model="filterType" @change="onFilterChange" class="select">
-          <option v-for="t in typeOptions" :key="t.value" :value="t.value">{{ t.label }}</option>
+          <option v-for="opt in typeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
       </div>
       <div class="toolbar-right">
         <button class="btn-mark-all" :disabled="markingAll" @click="markAllRead">
-          {{ markingAll ? 'Marking...' : 'Mark all as read' }}
+          {{ markingAll ? t.marking : t.markAllAsRead }}
         </button>
-        <RouterLink to="/notifications/settings" class="btn-settings">⚙️ Settings</RouterLink>
+        <RouterLink to="/notifications/settings" class="btn-settings">{{ t.settingsLink }}</RouterLink>
       </div>
     </div>
 
@@ -133,8 +135,8 @@ function onFilterChange() {
 
     <div v-else-if="notifications.length === 0" class="empty-state">
       <div class="empty-icon">🔔</div>
-      <h3>No notifications</h3>
-      <p>You're all caught up!</p>
+      <h3>{{ t.noNotifications }}</h3>
+      <p>{{ t.allCaughtUp }}</p>
     </div>
 
     <div v-else class="notif-list">
@@ -157,7 +159,7 @@ function onFilterChange() {
             class="btn-delete"
             :disabled="deletingId === n.id"
             @click.stop="remove(n)"
-            title="Delete"
+            :title="t.delete"
         >
           <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -321,21 +323,10 @@ function onFilterChange() {
   flex-shrink: 0;
 }
 
-.type-success {
-  background: #E8F8F0;
-}
-
-.type-fail {
-  background: #FEF0F0;
-}
-
-.type-warn {
-  background: #FFF8E6;
-}
-
-.type-info {
-  background: #EEF4FD;
-}
+.type-success { background: #E8F8F0; }
+.type-fail { background: #FEF0F0; }
+.type-warn { background: #FFF8E6; }
+.type-info { background: #EEF4FD; }
 
 .notif-body {
   flex: 1;

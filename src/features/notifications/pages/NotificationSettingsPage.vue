@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import {ref, onMounted, onBeforeUnmount} from 'vue'
+import {ref, onMounted, onBeforeUnmount, computed} from 'vue'
 import {notificationsApi} from '../api/notifications.api.ts'
-
+import {useI18n} from '@/shared/composables/use-i18n.ts'
 import type {NotificationSettings} from "@/features/notifications/api/notification-settings.ts";
+
+const {t} = useI18n()
 
 const settings = ref<NotificationSettings | null>(null)
 const loading = ref(true)
@@ -30,10 +32,10 @@ async function toggle(key: keyof NotificationSettings) {
   savingKey.value = key
   try {
     await notificationsApi.updateSettings({[key]: settings.value[key]})
-    showToast('Saved')
+    showToast(t.value.saved)
   } catch {
     settings.value[key] = prev
-    showToast('Failed to save')
+    showToast(t.value.failedToSaveSettings)
   } finally {
     savingKey.value = null
   }
@@ -47,22 +49,22 @@ function showToast(msg: string) {
   }, 2500)
 }
 
-const labels: Record<keyof NotificationSettings, string> = {
-  feedingSuccess: 'Notify on successful feeding',
-  feedingFailed: 'Notify on failed feeding',
-  lowFoodLevel: 'Warn about low food level',
-  deviceStatus: 'Notify on device status change',
-}
+const labels = computed((): Record<keyof NotificationSettings, string> => ({
+  feedingSuccess: t.value.notifFeedingSuccess,
+  feedingFailed: t.value.notifFeedingFailed,
+  lowFoodLevel: t.value.notifLowFood,
+  deviceStatus: t.value.notifDeviceStatus,
+}))
 </script>
 
 <template>
   <div class="settings-page">
-    <RouterLink to="/notifications" class="back">← Notifications</RouterLink>
+    <RouterLink to="/notifications" class="back">{{ t.backToNotifications }}</RouterLink>
 
     <div v-if="loading" class="skeleton" style="height:200px"></div>
 
     <div class="settings-card" v-else-if="settings">
-      <h2 class="card-title">Notification preferences</h2>
+      <h2 class="card-title">{{ t.notifSettingsTitle }}</h2>
       <div class="settings-list">
         <div v-for="(label, key) in labels" :key="key" class="setting-row">
           <span class="setting-label">{{ label }}</span>

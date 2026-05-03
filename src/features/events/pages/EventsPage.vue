@@ -4,9 +4,11 @@ import {useRoute, useRouter} from 'vue-router'
 import {devicesApi} from '@/features/devices/api/devices.api.ts'
 import {formatDateTime} from '@/shared/utils/formatters.ts'
 import {useToast} from '@/shared/composables/use-toast.ts'
+import {useI18n} from '@/shared/composables/use-i18n.ts'
 import type {FeedingEvent} from "@/features/devices/api/feeding-event.ts";
 
 const toast = useToast()
+const {t} = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -49,7 +51,7 @@ async function fetchEvents() {
     events.value = res.data
     total.value = res.meta.total
   } catch {
-    toast.error('Failed to load feeding history')
+    toast.error(t.value.failedToLoadHistory)
   } finally {
     loading.value = false
   }
@@ -59,7 +61,7 @@ onMounted(fetchEvents)
 
 watch([filterType, filterSuccess, startDate, endDate], () => {
   if (startDate.value && endDate.value && endDate.value < startDate.value) {
-    toast.warning('End date cannot be before start date')
+    toast.warning(t.value.endDateBeforeStart)
     return
   }
   page.value = 1
@@ -86,40 +88,40 @@ const hasFilters = computed(() =>
 
 <template>
   <div class="events-page">
-    <RouterLink :to="`/devices/${deviceId}`" class="breadcrumb">← Device</RouterLink>
+    <RouterLink :to="`/devices/${deviceId}`" class="breadcrumb">{{ t.devicesBack }}</RouterLink>
 
     <div class="page-header">
-      <h2 class="page-title">Feeding history</h2>
-      <span v-if="!loading" class="total-count">{{ total }} events</span>
+      <h2 class="page-title">{{ t.feedingHistory }}</h2>
+      <span v-if="!loading" class="total-count">{{ total }} {{ t.eventsCount }}</span>
     </div>
 
     <div class="filters-card">
       <div class="filters-row">
         <div class="filter-group">
-          <label>Type</label>
+          <label>{{ t.filterType }}</label>
           <select v-model="filterType" class="filter-select">
-            <option value="all">All types</option>
-            <option value="MANUAL">👆 Manual</option>
-            <option value="SCHEDULED">🤖 Automatic</option>
+            <option value="all">{{ t.allTypes }}</option>
+            <option value="MANUAL">{{ t.typeManual }}</option>
+            <option value="SCHEDULED">{{ t.typeAutomatic }}</option>
           </select>
         </div>
         <div class="filter-group">
-          <label>Status</label>
+          <label>{{ t.filterStatus }}</label>
           <select v-model="filterSuccess" class="filter-select">
-            <option value="all">All</option>
-            <option value="true">✓ Successful</option>
-            <option value="false">✗ Failed</option>
+            <option value="all">{{ t.allStatuses }}</option>
+            <option value="true">{{ t.statusSuccessful }}</option>
+            <option value="false">{{ t.statusFailed }}</option>
           </select>
         </div>
         <div class="filter-group">
-          <label>From</label>
+          <label>{{ t.filterFrom }}</label>
           <input v-model="startDate" type="date" class="filter-input"/>
         </div>
         <div class="filter-group">
-          <label>To</label>
+          <label>{{ t.filterTo }}</label>
           <input v-model="endDate" type="date" class="filter-input"/>
         </div>
-        <button v-if="hasFilters" class="btn-clear" @click="clearFilters">Clear filters</button>
+        <button v-if="hasFilters" class="btn-clear" @click="clearFilters">{{ t.clearFilters }}</button>
       </div>
     </div>
 
@@ -129,20 +131,20 @@ const hasFilters = computed(() =>
 
     <div v-else-if="events.length === 0" class="empty-state">
       <div class="empty-icon">🍽️</div>
-      <h3>No events found</h3>
-      <p v-if="hasFilters">Try clearing the filters</p>
-      <p v-else>No feeding events yet</p>
+      <h3>{{ t.noEventsFound }}</h3>
+      <p v-if="hasFilters">{{ t.tryClearingFilters }}</p>
+      <p v-else>{{ t.noFeedingEvents }}</p>
     </div>
 
     <div v-else class="table-wrap">
       <table class="events-table">
         <thead>
         <tr>
-          <th>Time</th>
-          <th>Type</th>
-          <th>Portion</th>
-          <th>Status</th>
-          <th>Note</th>
+          <th>{{ t.timeCol }}</th>
+          <th>{{ t.typeCol }}</th>
+          <th>{{ t.portionCol }}</th>
+          <th>{{ t.statusCol }}</th>
+          <th>{{ t.noteCol }}</th>
         </tr>
         </thead>
         <tbody>
@@ -150,7 +152,7 @@ const hasFilters = computed(() =>
           <td class="td-time">{{ formatDateTime(ev.createdAt) }}</td>
           <td>
               <span class="type-badge" :class="ev.type === 'MANUAL' ? 'manual' : 'auto'">
-                {{ ev.type === 'MANUAL' ? '👆 Manual' : '🤖 Auto' }}
+                {{ ev.type === 'MANUAL' ? t.typeManual : t.typeAuto }}
               </span>
           </td>
           <td class="td-portion">{{ ev.portionSize }}g</td>
