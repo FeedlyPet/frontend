@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, onBeforeUnmount, computed} from 'vue'
+import {ref, onMounted, computed} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {devicesApi} from '../api/devices.api.ts'
 import {petsApi} from '@/features/pets/api/pets.api.ts'
@@ -9,6 +9,7 @@ import {useToast} from '@/shared/composables/use-toast.ts'
 import {useI18n} from '@/shared/composables/use-i18n.ts'
 import {extractErrorMessage} from '@/shared/utils/error-handler.ts'
 import FeedModal from '../components/FeedModal.vue'
+import {useFeedModal} from '../composables/use-feed-modal.ts'
 import MqttPasswordModal from '../components/MqttPasswordModal.vue'
 import FeedingEventsTable from '../components/FeedingEventsTable.vue'
 import type {Device} from "@/features/devices/api/device.ts";
@@ -40,11 +41,18 @@ const petsLoaded = ref(false)
 const confirmDelete = ref(false)
 const deleteLoading = ref(false)
 
-const feedModal = ref(false)
-const portionSize = ref(100)
-const feedLoading = ref(false)
-const feedSuccess = ref(false)
-let feedCloseTimer: ReturnType<typeof setTimeout> | null = null
+const {
+  feedModal,
+  feedDevice,
+  portionSize,
+  feedLoading,
+  feedPending,
+  feedSuccess,
+  feedError,
+  openFeedModal,
+  closeFeedModal,
+  confirmFeed,
+} = useFeedModal()
 
 const regenConfirm = ref(false)
 const regenLoading = ref(false)
@@ -68,9 +76,6 @@ onMounted(async () => {
   }
 })
 
-onBeforeUnmount(() => {
-  if (feedCloseTimer) clearTimeout(feedCloseTimer)
-})
 
 async function openEdit() {
   if (!device.value) return
@@ -122,24 +127,6 @@ async function doDelete() {
   }
 }
 
-async function confirmFeed() {
-  feedLoading.value = true
-  try {
-    await devicesApi.manualFeed(deviceId, portionSize.value)
-    feedSuccess.value = true
-    feedCloseTimer = setTimeout(() => {
-      feedModal.value = false;
-      feedSuccess.value = false
-    }, 1500)
-    const events = await devicesApi.getEvents(deviceId, {limit: 5}).catch(() => ({data: [] as FeedingEvent[]}))
-    recentEvents.value = events.data
-  } catch {
-    toast.error(t.value.failedToSendFeed)
-    feedModal.value = false
-  } finally {
-    feedLoading.value = false
-  }
-}
 
 async function regeneratePassword() {
   regenLoading.value = true
@@ -227,7 +214,7 @@ const portionsLeft = computed(() => {
       <div class="section-card">
         <h3 class="section-title">{{ t.manualFeeding }}</h3>
         <p v-if="!device.isOnline" class="offline-note">{{ t.deviceOffline }}</p>
-        <button v-else class="btn-feed-big" @click="feedModal = true; feedSuccess = false; portionSize = 100">
+        <button v-else class="btn-feed-big" @click="openFeedModal(device)">
           🍽️ {{ t.feedNow }}
         </button>
       </div>
@@ -259,12 +246,15 @@ const portionsLeft = computed(() => {
 
   <FeedModal
       v-if="feedModal"
+      :device-name="feedDevice?.name"
       :portion-size="portionSize"
       :loading="feedLoading"
+      :pending="feedPending"
       :success="feedSuccess"
+      :error="feedError"
       @update:portion-size="portionSize = $event"
       @confirm="confirmFeed"
-      @close="feedModal = false"
+      @close="closeFeedModal"
   />
 
   <Teleport to="body">

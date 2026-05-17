@@ -23,7 +23,9 @@ const {
   feedDevice,
   portionSize,
   feedLoading,
+  feedPending,
   feedSuccess,
+  feedError,
   openFeedModal,
   closeFeedModal,
   confirmFeed
@@ -270,7 +272,9 @@ onMounted(async () => {
         :device-name="feedDevice?.name"
         :portion-size="portionSize"
         :loading="feedLoading"
+        :pending="feedPending"
         :success="feedSuccess"
+        :error="feedError"
         @update:portion-size="portionSize = $event"
         @confirm="confirmFeed"
         @close="closeFeedModal"

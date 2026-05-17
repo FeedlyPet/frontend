@@ -8,7 +8,9 @@ defineProps<{
   deviceName?: string
   portionSize: number
   loading: boolean
+  pending: boolean
   success: boolean
+  error: string | null
 }>()
 
 const emit = defineEmits<{
@@ -26,10 +28,22 @@ const emit = defineEmits<{
           <h3>{{ t.feedNowTitle }}{{ deviceName ? ` — ${deviceName}` : '' }}</h3>
           <button class="modal-close" @click="emit('close')">✕</button>
         </div>
+
         <div v-if="success" class="feed-success">
           <span class="success-icon">✅</span>
           <p>{{ t.commandSent }}</p>
         </div>
+
+        <div v-else-if="pending" class="feed-success">
+          <span class="success-icon">⏳</span>
+          <p>Command sent, waiting for result...</p>
+        </div>
+
+        <div v-else-if="error" class="feed-success">
+          <span class="success-icon">❌</span>
+          <p>{{ error }}</p>
+        </div>
+
         <template v-else>
           <div class="portion-field">
             <label>{{ t.portionSize }}: <strong>{{ portionSize }}g</strong></label>
