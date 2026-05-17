@@ -127,7 +127,7 @@ const translations = {
         // feed modal
         feedNowTitle: 'Feed now',
         portionSize: 'Portion size',
-        commandSent: 'Command sent!',
+        commandSent: 'Fed successfully!',
         sending: 'Sending...',
         // mqtt modal
         mqttPasswordTitle: 'MQTT password',
@@ -359,7 +359,7 @@ const translations = {
         // feed modal
         feedNowTitle: 'Годувати зараз',
         portionSize: 'Розмір порції',
-        commandSent: 'Команду надіслано!',
+        commandSent: 'Годування успішне!',
         sending: 'Надсилання...',
         // mqtt modal
         mqttPasswordTitle: 'MQTT-пароль',

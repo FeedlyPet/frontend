@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, computed} from 'vue'
+import {ref, onMounted, onBeforeUnmount, computed} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {devicesApi} from '../api/devices.api.ts'
 import {petsApi} from '@/features/pets/api/pets.api.ts'
@@ -10,6 +10,7 @@ import {useI18n} from '@/shared/composables/use-i18n.ts'
 import {extractErrorMessage} from '@/shared/utils/error-handler.ts'
 import FeedModal from '../components/FeedModal.vue'
 import {useFeedModal} from '../composables/use-feed-modal.ts'
+import {useSocket} from '@/shared/composables/use-socket.ts'
 import MqttPasswordModal from '../components/MqttPasswordModal.vue'
 import FeedingEventsTable from '../components/FeedingEventsTable.vue'
 import type {Device} from "@/features/devices/api/device.ts";
@@ -59,6 +60,16 @@ const regenLoading = ref(false)
 const newMqttPassword = ref('')
 const showMqttModal = ref(false)
 
+const socket = useSocket()
+
+function onFoodLevel(data: { deviceId: string; level: number }) {
+  if (device.value && data.deviceId === device.value.id) {
+    foodLevel.value = foodLevel.value
+      ? { ...foodLevel.value, level: data.level }
+      : { level: data.level, measuredAt: new Date().toISOString() }
+  }
+}
+
 onMounted(async () => {
   try {
     const [dev, fl, events] = await Promise.all([
@@ -74,6 +85,12 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+
+  socket.on('food:level', onFoodLevel)
+})
+
+onBeforeUnmount(() => {
+  socket.off('food:level', onFoodLevel)
 })
 
 
