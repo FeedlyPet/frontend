@@ -1,6 +1,5 @@
 import {ref, onBeforeUnmount} from 'vue'
 import {devicesApi} from '../api/devices.api.ts'
-import {useToast} from '@/shared/composables/use-toast.ts'
 import {useSocket} from '@/shared/composables/use-socket.ts'
 import type {Device} from "@/features/devices/api/device.ts";
 
@@ -14,7 +13,6 @@ interface FeedingResultEvent {
 }
 
 export function useFeedModal() {
-    const toast = useToast()
     const socket = useSocket()
 
     const feedModal = ref(false)
