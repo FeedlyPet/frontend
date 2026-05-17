@@ -58,10 +58,10 @@ export function useFeedModal() {
 
         try {
             await devicesApi.manualFeed(feedDevice.value.id, portionSize.value)
-        } catch {
-            toast.error('Failed to send feed command')
+        } catch (err: any) {
             feedLoading.value = false
-            closeFeedModal()
+            feedError.value = err?.response?.data?.message ?? err?.message ?? 'Failed to send feed command'
+            feedCloseTimer = setTimeout(closeFeedModal, 3000)
             return
         }
 
@@ -71,6 +71,7 @@ export function useFeedModal() {
         const deviceId = feedDevice.value.id
 
         function onResult(data: FeedingResultEvent) {
+            console.log('[Feed] feeding:result received', data)
             if (data.deviceId !== deviceId) return
             socket.off('feeding:result', onResult)
             if (feedTimeoutTimer) clearTimeout(feedTimeoutTimer)
@@ -85,7 +86,9 @@ export function useFeedModal() {
             }
         }
 
+        console.log('[Feed] pending, socket connected:', socket.connected)
         socket.on('feeding:result', onResult)
+        console.log('[Feed] listening for feeding:result on deviceId:', deviceId)
 
         feedTimeoutTimer = setTimeout(() => {
             socket.off('feeding:result', onResult)
