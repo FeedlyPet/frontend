@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, computed} from 'vue'
+import {ref, onMounted, onBeforeUnmount, computed} from 'vue'
 import {devicesApi} from '@/features/devices/api/devices.api.ts'
 import {petsApi} from '@/features/pets/api/pets.api.ts'
 import {notificationsApi} from '@/features/notifications/api/notifications.api.ts'
@@ -7,6 +7,7 @@ import {statisticsApi} from '@/features/statistics/api/statistics.api.ts'
 import {foodLevelColor, formatDateTime} from '@/shared/utils/formatters.ts'
 import {useToast} from '@/shared/composables/use-toast.ts'
 import {useFeedModal} from '@/features/devices/composables/use-feed-modal.ts'
+import {useSocket} from '@/shared/composables/use-socket.ts'
 import {getCurrentUser} from '@/shared/composables/use-current-user.ts'
 import FeedModal from '@/features/devices/components/FeedModal.vue'
 import FeedingEventsTable from '@/features/devices/components/FeedingEventsTable.vue'
@@ -30,6 +31,18 @@ const {
   closeFeedModal,
   confirmFeed
 } = useFeedModal()
+
+const socket = useSocket()
+
+function onFoodLevel(data: { deviceId: string; level: number }) {
+  if (foodLevels.value[data.deviceId] !== undefined) {
+    foodLevels.value[data.deviceId] = {
+      ...(foodLevels.value[data.deviceId] ?? {}),
+      level: data.level,
+      timestamp: new Date().toISOString(),
+    } as FoodLevel
+  }
+}
 
 const userName = ref('')
 const petsTotal = ref(0)
@@ -104,6 +117,12 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+
+  socket.on('food:level', onFoodLevel)
+})
+
+onBeforeUnmount(() => {
+  socket.off('food:level', onFoodLevel)
 })
 
 </script>

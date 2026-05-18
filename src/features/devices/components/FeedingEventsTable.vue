@@ -31,8 +31,8 @@ defineProps<{
         </td>
         <td v-if="showDevice" class="td-device">{{ ev.deviceName ?? ev.deviceId }}</td>
         <td>
-          <span class="type-badge" :class="ev.type === 'MANUAL' ? 'manual' : 'auto'">
-            {{ ev.type === 'MANUAL' ? t.typeManual : t.typeAuto }}
+          <span class="type-badge" :class="ev.type === 'manual' ? 'manual' : 'auto'">
+            {{ ev.type === 'manual' ? t.typeManual : t.typeAuto }}
           </span>
         </td>
         <td class="td-portion">{{ ev.portionSize }}g</td>

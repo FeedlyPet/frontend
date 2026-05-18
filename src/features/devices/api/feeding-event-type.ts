@@ -1,6 +1,6 @@
 export const FeedingEventType = {
-    Manual: 'MANUAL',
-    Scheduled: 'SCHEDULED',
+    Manual: 'manual',
+    Automatic: 'automatic',
 } as const
 
 export type FeedingEventType = typeof FeedingEventType[keyof typeof FeedingEventType]

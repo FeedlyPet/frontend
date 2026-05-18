@@ -4,7 +4,7 @@ let socket: Socket | null = null
 
 export function useSocket() {
     function connect(token: string) {
-        if (socket?.connected) return
+        if (socket) return
         socket = io(import.meta.env.VITE_API_URL ?? 'http://localhost:3000', {
             auth: { token },
             transports: ['websocket'],

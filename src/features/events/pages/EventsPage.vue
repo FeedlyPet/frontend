@@ -101,8 +101,8 @@ const hasFilters = computed(() =>
           <label>{{ t.filterType }}</label>
           <select v-model="filterType" class="filter-select">
             <option value="all">{{ t.allTypes }}</option>
-            <option value="MANUAL">{{ t.typeManual }}</option>
-            <option value="SCHEDULED">{{ t.typeAutomatic }}</option>
+            <option value="manual">{{ t.typeManual }}</option>
+            <option value="automatic">{{ t.typeAutomatic }}</option>
           </select>
         </div>
         <div class="filter-group">
@@ -151,8 +151,8 @@ const hasFilters = computed(() =>
         <tr v-for="ev in events" :key="ev.id">
           <td class="td-time">{{ formatDateTime(ev.createdAt) }}</td>
           <td>
-              <span class="type-badge" :class="ev.type === 'MANUAL' ? 'manual' : 'auto'">
-                {{ ev.type === 'MANUAL' ? t.typeManual : t.typeAuto }}
+              <span class="type-badge" :class="ev.type === 'manual' ? 'manual' : 'auto'">
+                {{ ev.type === 'manual' ? t.typeManual : t.typeAuto }}
               </span>
           </td>
           <td class="td-portion">{{ ev.portionSize }}g</td>
