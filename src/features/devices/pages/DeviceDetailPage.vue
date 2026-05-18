@@ -66,7 +66,7 @@ function onFoodLevel(data: { deviceId: string; level: number }) {
   if (device.value && data.deviceId === device.value.id) {
     foodLevel.value = foodLevel.value
       ? { ...foodLevel.value, level: data.level }
-      : { level: data.level, measuredAt: new Date().toISOString() }
+      : { level: data.level, timestamp: new Date().toISOString() }
   }
 }
 
@@ -223,7 +223,7 @@ const portionsLeft = computed(() => {
               </span>
               <span v-if="portionsLeft !== null" class="portions-left">~{{ portionsLeft }} {{ t.portionsLeft }}</span>
             </div>
-            <p class="food-measured">{{ t.measuredAt }} {{ relativeTime(foodLevel.measuredAt) }}</p>
+            <p class="food-measured">{{ t.measuredAt }} {{ relativeTime(foodLevel.timestamp) }}</p>
           </div>
         </template>
       </div>
