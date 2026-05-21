@@ -44,6 +44,14 @@ function onFoodLevel(data: { deviceId: string; level: number }) {
   }
 }
 
+function onDeviceStatus(data: { deviceId: string; isOnline: boolean; lastSeen: string }) {
+  const device = devices.value.find(d => d.id === data.deviceId)
+  if (device) {
+    device.isOnline = data.isOnline
+    device.lastSeen = data.lastSeen
+  }
+}
+
 const userName = ref('')
 const petsTotal = ref(0)
 const devices = ref<Device[]>([])
@@ -119,10 +127,12 @@ onMounted(async () => {
   }
 
   socket.on('food:level', onFoodLevel)
+  socket.on('device:status', onDeviceStatus)
 })
 
 onBeforeUnmount(() => {
   socket.off('food:level', onFoodLevel)
+  socket.off('device:status', onDeviceStatus)
 })
 
 </script>
@@ -634,8 +644,8 @@ onBeforeUnmount(() => {
 
 .btn-feed {
   padding: 0.45rem 0.9rem;
-  background: var(--brown-dark);
-  color: var(--bg-page);
+  background: var(--brown-light);
+  color: #fdf6ec;
   border: none;
   border-radius: 0.65rem;
   font-size: 0.8rem;

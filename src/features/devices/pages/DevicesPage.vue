@@ -516,8 +516,8 @@ async function submitRegister() {
 .btn-feed {
   margin-top: 0.25rem;
   padding: 0.55rem;
-  background: var(--brown-dark);
-  color: var(--bg-page);
+  background: var(--brown-light);
+  color: #fdf6ec;
   border: none;
   border-radius: 0.75rem;
   font-size: 0.875rem;

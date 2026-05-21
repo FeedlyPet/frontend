@@ -152,7 +152,7 @@ const emit = defineEmits<{
 .btn-feed {
   margin-top: 0.25rem;
   padding: 0.55rem;
-  background: var(--brown-dark);
+  background: var(--brown-light);
   color: #fdf6ec;
   border: none;
   border-radius: 0.75rem;
