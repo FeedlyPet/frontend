@@ -70,6 +70,12 @@ function onFoodLevel(data: { deviceId: string; level: number }) {
   }
 }
 
+function onDeviceStatus(data: { deviceId: string; isOnline: boolean; lastSeen: string }) {
+  if (device.value && data.deviceId === device.value.id) {
+    device.value = { ...device.value, isOnline: data.isOnline, lastSeen: data.lastSeen }
+  }
+}
+
 onMounted(async () => {
   try {
     const [dev, fl, events] = await Promise.all([
@@ -87,10 +93,12 @@ onMounted(async () => {
   }
 
   socket.on('food:level', onFoodLevel)
+  socket.on('device:status', onDeviceStatus)
 })
 
 onBeforeUnmount(() => {
   socket.off('food:level', onFoodLevel)
+  socket.off('device:status', onDeviceStatus)
 })
 
 
@@ -634,8 +642,8 @@ const portionsLeft = computed(() => {
 
 .btn-feed-big {
   padding: 0.75rem 1.5rem;
-  background: var(--brown-dark);
-  color: var(--bg-page);
+  background: var(--brown-light);
+  color: #fdf6ec;
   border: none;
   border-radius: 0.75rem;
   font-size: 1rem;
