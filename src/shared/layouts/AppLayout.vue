@@ -7,6 +7,7 @@ import AppLogo from '@/shared/components/AppLogo.vue'
 import {useTheme} from '@/shared/composables/use-theme.ts'
 import {useI18n} from '@/shared/composables/use-i18n.ts'
 import {getCurrentUser} from '@/shared/composables/use-current-user.ts'
+import {useSocket} from '@/shared/composables/use-socket.ts'
 
 const router = useRouter()
 const route = useRoute()
@@ -14,6 +15,7 @@ const route = useRoute()
 const {theme, toggle: toggleTheme} = useTheme()
 const {lang, t, toggle: toggleLang} = useI18n()
 
+const socket = useSocket()
 const unreadCount = ref(0)
 const user = ref<{ name: string; email: string } | null>(null)
 
@@ -34,13 +36,21 @@ const pageTitle = computed(() => {
 
 let interval: ReturnType<typeof setInterval>
 
+function onNotificationNew() {
+  unreadCount.value++
+}
+
 onMounted(() => {
   user.value = getCurrentUser()
   fetchUnreadCount()
   interval = setInterval(fetchUnreadCount, 30_000)
+  socket.on('notification:new', onNotificationNew)
 })
 
-onUnmounted(() => clearInterval(interval))
+onUnmounted(() => {
+  clearInterval(interval)
+  socket.off('notification:new', onNotificationNew)
+})
 
 async function fetchUnreadCount() {
   try {

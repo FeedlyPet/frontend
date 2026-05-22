@@ -63,7 +63,7 @@ const showMqttModal = ref(false)
 const socket = useSocket()
 
 function onFoodLevel(data: { deviceId: string; level: number }) {
-  if (device.value && data.deviceId === device.value.id) {
+  if (device.value && data.deviceId === device.value.deviceId) {
     foodLevel.value = foodLevel.value
       ? { ...foodLevel.value, level: data.level }
       : { level: data.level, timestamp: new Date().toISOString() }
@@ -71,7 +71,7 @@ function onFoodLevel(data: { deviceId: string; level: number }) {
 }
 
 function onDeviceStatus(data: { deviceId: string; isOnline: boolean; lastSeen: string }) {
-  if (device.value && data.deviceId === device.value.id) {
+  if (device.value && data.deviceId === device.value.deviceId) {
     device.value = { ...device.value, isOnline: data.isOnline, lastSeen: data.lastSeen }
   }
 }
