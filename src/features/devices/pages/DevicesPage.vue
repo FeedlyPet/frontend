@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch, onMounted, computed} from 'vue'
+import {ref, watch, onMounted, onBeforeUnmount, computed} from 'vue'
 import {useRouter, useRoute} from 'vue-router'
 import axios from 'axios'
 import {devicesApi} from '../api/devices.api.ts'
@@ -19,6 +19,7 @@ import type {Device} from "@/features/devices/api/device.ts";
 import type {FoodLevel} from "@/features/devices/api/food-level.ts";
 import type {CreateDeviceDto} from "@/features/devices/api/create-device.dto.ts";
 import type {Pet} from "@/features/pets/api/pet.ts";
+import {useSocket} from '@/shared/composables/use-socket.ts'
 
 const toast = useToast()
 const {t} = useI18n()
@@ -56,6 +57,16 @@ const petsLoaded = ref(false)
 const registerForm = ref<CreateDeviceDto>({deviceId: '', name: '', location: '', petId: undefined})
 
 const totalPages = computed(() => Math.ceil(total.value / limit))
+
+const socket = useSocket()
+
+function onDeviceStatus(data: { deviceId: string; isOnline: boolean; lastSeen: string }) {
+  const device = devices.value.find(d => d.deviceId === data.deviceId)
+  if (device) {
+    device.isOnline = data.isOnline
+    device.lastSeen = data.lastSeen
+  }
+}
 
 async function fetchDevices() {
   loading.value = true
@@ -96,7 +107,14 @@ watch(search, (val, old) => {
   if (val !== old) debouncedSearch()
 })
 
-onMounted(fetchDevices)
+onMounted(() => {
+  fetchDevices()
+  socket.on('device:status', onDeviceStatus)
+})
+
+onBeforeUnmount(() => {
+  socket.off('device:status', onDeviceStatus)
+})
 
 async function openRegister() {
   registerForm.value = {deviceId: '', name: '', location: '', petId: undefined}
