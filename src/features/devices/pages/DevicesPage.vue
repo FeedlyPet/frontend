@@ -61,7 +61,7 @@ const totalPages = computed(() => Math.ceil(total.value / limit))
 const socket = useSocket()
 
 function onDeviceStatus(data: { deviceId: string; isOnline: boolean; lastSeen: string }) {
-  const device = devices.value.find(d => d.deviceId === data.deviceId)
+  const device = devices.value.find(d => d.id === data.deviceId)
   if (device) {
     device.isOnline = data.isOnline
     device.lastSeen = data.lastSeen
