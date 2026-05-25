@@ -13,7 +13,8 @@ import FeedModal from '@/features/devices/components/FeedModal.vue'
 import FeedingEventsTable from '@/features/devices/components/FeedingEventsTable.vue'
 import type {Device} from "@/features/devices/api/device.ts";
 import type {FoodLevel} from "@/features/devices/api/food-level.ts";
-import type {FeedingEvent} from "@/features/devices/api/feeding-event.ts";
+import type {FeedingEvent} from "@/features/devices/api/feeding-event.ts"
+import {FeedingEventType} from "@/features/devices/api/feeding-event-type.ts";
 import type {StatisticsResponse} from "@/features/statistics/api/statistics-response.ts";
 import {useI18n} from '@/shared/composables/use-i18n.ts'
 
@@ -50,6 +51,20 @@ function onDeviceStatus(data: { deviceId: string; isOnline: boolean; lastSeen: s
     device.isOnline = data.isOnline
     device.lastSeen = data.lastSeen
   }
+}
+
+function onFeedingResult(data: { deviceId: string; deviceName: string; portionSize: number; success: boolean; errorMessage?: string; timestamp: string }) {
+  const newEvent: FeedingEvent = {
+    id: `ws-${Date.now()}`,
+    deviceId: data.deviceId,
+    deviceName: data.deviceName,
+    type: FeedingEventType.Manual,
+    portionSize: data.portionSize,
+    success: data.success,
+    errorMessage: data.errorMessage,
+    createdAt: data.timestamp,
+  }
+  recentEvents.value = [newEvent, ...recentEvents.value].slice(0, 5)
 }
 
 const userName = ref('')
@@ -128,11 +143,13 @@ onMounted(async () => {
 
   socket.on('food:level', onFoodLevel)
   socket.on('device:status', onDeviceStatus)
+  socket.on('feeding:result', onFeedingResult)
 })
 
 onBeforeUnmount(() => {
   socket.off('food:level', onFoodLevel)
   socket.off('device:status', onDeviceStatus)
+  socket.off('feeding:result', onFeedingResult)
 })
 
 </script>
