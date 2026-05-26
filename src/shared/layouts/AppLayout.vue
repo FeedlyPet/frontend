@@ -2,12 +2,12 @@
 import {ref, onMounted, onUnmounted, computed} from 'vue'
 import {RouterLink, RouterView, useRouter, useRoute} from 'vue-router'
 import {authApi} from '@/features/auth/api/auth.api.ts'
-import {notificationsApi} from '@/features/notifications/api/notifications.api.ts'
 import AppLogo from '@/shared/components/AppLogo.vue'
 import {useTheme} from '@/shared/composables/use-theme.ts'
 import {useI18n} from '@/shared/composables/use-i18n.ts'
 import {getCurrentUser} from '@/shared/composables/use-current-user.ts'
 import {useSocket} from '@/shared/composables/use-socket.ts'
+import {useUnreadCount} from '@/features/notifications/composables/use-unread-count.ts'
 
 const router = useRouter()
 const route = useRoute()
@@ -16,7 +16,7 @@ const {theme, toggle: toggleTheme} = useTheme()
 const {lang, t, toggle: toggleLang} = useI18n()
 
 const socket = useSocket()
-const unreadCount = ref(0)
+const {unreadCount, fetchUnreadCount} = useUnreadCount()
 const user = ref<{ name: string; email: string } | null>(null)
 
 const userInitials = computed(() => {
@@ -52,12 +52,6 @@ onUnmounted(() => {
   socket.off('notification:new', onNotificationNew)
 })
 
-async function fetchUnreadCount() {
-  try {
-    unreadCount.value = await notificationsApi.getUnreadCount()
-  } catch {
-  }
-}
 
 async function logout() {
   const refreshToken = localStorage.getItem('refreshToken')

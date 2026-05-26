@@ -4,10 +4,12 @@ import {notificationsApi} from '../api/notifications.api.ts'
 import {relativeTime} from '@/shared/utils/formatters.ts'
 import {useToast} from '@/shared/composables/use-toast.ts'
 import {useI18n} from '@/shared/composables/use-i18n.ts'
-import type {Notification} from "@/features/notifications/api/notification.ts";
+import type {Notification} from "@/features/notifications/api/notification.ts"
+import {useUnreadCount} from '../composables/use-unread-count.ts';
 
 const toast = useToast()
 const {t} = useI18n()
+const {decrement, reset} = useUnreadCount()
 
 const notifications = ref<Notification[]>([])
 const loading = ref(true)
@@ -69,6 +71,7 @@ async function markRead(n: Notification) {
   try {
     await notificationsApi.markRead(n.id)
     n.isRead = true
+    decrement()
   } catch {
     toast.error(t.value.failedToMarkRead)
   }
@@ -81,6 +84,7 @@ async function markAllRead() {
     notifications.value.forEach(n => {
       n.isRead = true
     })
+    reset()
     toast.success(t.value.allMarkedRead)
   } catch {
     toast.error(t.value.failedToMarkAllRead)
@@ -93,6 +97,7 @@ async function remove(n: Notification) {
   deletingId.value = n.id
   try {
     await notificationsApi.remove(n.id)
+    if (!n.isRead) decrement()
     notifications.value = notifications.value.filter(x => x.id !== n.id)
     total.value--
   } catch {
