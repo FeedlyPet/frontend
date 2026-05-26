@@ -415,7 +415,7 @@ const successRate = computed(() => {
 
 .chart-body {
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   gap: 0.35rem;
   height: 160px;
   overflow-x: auto;
