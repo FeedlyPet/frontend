@@ -173,28 +173,29 @@ async function savePassword() {
 }
 
 .btn-primary {
-  padding: 0.75rem;
-  background: var(--brown-dark);
-  color: var(--bg-page);
-  border: none;
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
   border-radius: 0.75rem;
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  color: var(--text-secondary);
   font-family: 'Outfit', sans-serif;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--brown-mid);
+  border-color: var(--text-muted);
 }
 
 .btn-primary:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 </style>

@@ -303,75 +303,37 @@ body {
 }
 
 /* ── Buttons ──────────────────────────────────────────────────────── */
-.btn-cancel {
+.btn-cancel,
+.btn-confirm,
+.btn-danger {
     flex: 1;
-    padding: 0.65rem;
+    padding: 0.5rem 0.9rem;
     border: 1.5px solid var(--border);
-    background: none;
+    background: var(--bg-card);
     border-radius: 0.75rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-secondary);
     font-family: 'Outfit', sans-serif;
     cursor: pointer;
-    transition: border-color 0.2s;
-}
-
-.btn-cancel:hover {
-    border-color: var(--brown-light);
-}
-
-.btn-confirm {
-    flex: 1;
-    padding: 0.65rem;
-    background: var(--brown-dark);
-    color: var(--text-on-dark);
-    border: none;
-    border-radius: 0.75rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    font-family: 'Outfit', sans-serif;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    white-space: nowrap;
 }
 
-.btn-confirm:hover:not(:disabled) {
-    background: var(--brown-mid);
-}
-
-.btn-confirm:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.btn-danger {
-    flex: 1;
-    padding: 0.65rem;
-    background: #c0392b;
-    color: #fff;
-    border: none;
-    border-radius: 0.75rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    font-family: 'Outfit', sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    transition: background 0.2s;
-}
-
+.btn-cancel:hover,
+.btn-confirm:hover:not(:disabled),
 .btn-danger:hover:not(:disabled) {
-    background: #a93226;
+    border-color: var(--text-muted);
 }
 
+.btn-cancel:disabled,
+.btn-confirm:disabled,
 .btn-danger:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -607,29 +569,30 @@ body {
 
 .btn-submit {
     margin-top: 0.5rem;
-    padding: 0.75rem;
-    background: var(--brown-dark);
-    color: var(--text-on-dark);
-    border: none;
+    padding: 0.5rem 0.9rem;
+    border: 1.5px solid var(--border);
+    background: var(--bg-card);
     border-radius: 0.75rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 600;
+    color: var(--text-secondary);
     font-family: 'Outfit', sans-serif;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     width: 100%;
+    white-space: nowrap;
 }
 
 .btn-submit:hover:not(:disabled) {
-    background: var(--brown-mid);
+    border-color: var(--text-muted);
 }
 
 .btn-submit:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 

@@ -365,21 +365,21 @@ const emptyMessage = computed(() => {
 }
 
 .btn-add {
-  padding: 0.6rem 1.1rem;
-  background: var(--brown-dark);
-  color: var(--bg-page);
-  border: none;
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
   border-radius: 0.75rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  color: var(--text-secondary);
   font-family: 'Outfit', sans-serif;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-add:hover {
-  background: var(--brown-mid);
+  border-color: var(--text-muted);
 }
 
 .empty-state {

@@ -329,21 +329,21 @@ async function submitRegister() {
 }
 
 .btn-add {
-  padding: 0.6rem 1.1rem;
-  background: var(--brown-dark);
-  color: var(--bg-page);
-  border: none;
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
   border-radius: 0.75rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  color: var(--text-secondary);
   font-family: 'Outfit', sans-serif;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-add:hover {
-  background: var(--brown-mid);
+  border-color: var(--text-muted);
 }
 
 @media (max-width: 480px) {
@@ -533,25 +533,25 @@ async function submitRegister() {
 
 .btn-feed {
   margin-top: 0.25rem;
-  padding: 0.55rem;
-  background: var(--brown-light);
-  color: #fdf6ec;
-  border: none;
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
   border-radius: 0.75rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  color: var(--text-secondary);
   font-family: 'Outfit', sans-serif;
   cursor: pointer;
-  transition: background 0.2s, opacity 0.2s;
+  transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .btn-feed:hover:not(:disabled) {
-  background: var(--brown-mid);
+  border-color: var(--text-muted);
 }
 
 .btn-feed:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
-  background: #aaa;
 }
 </style>

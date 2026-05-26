@@ -464,17 +464,23 @@ onBeforeUnmount(() => {
 }
 
 .btn-primary {
-  padding: 0.5rem 1rem;
-  background: var(--brown-dark);
-  color: var(--bg-page);
-  border: none;
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
   border-radius: 0.75rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  color: var(--text-secondary);
   cursor: pointer;
   text-decoration: none;
   font-family: 'Outfit', sans-serif;
   display: inline-block;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  border-color: var(--text-muted);
 }
 
 .week-chips {
@@ -660,26 +666,26 @@ onBeforeUnmount(() => {
 }
 
 .btn-feed {
-  padding: 0.45rem 0.9rem;
-  background: var(--brown-light);
-  color: #fdf6ec;
-  border: none;
-  border-radius: 0.65rem;
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  border-radius: 0.75rem;
   font-size: 0.8rem;
   font-weight: 600;
+  color: var(--text-secondary);
   font-family: 'Outfit', sans-serif;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s, opacity 0.2s;
+  transition: all 0.2s;
   flex-shrink: 0;
 }
 
 .btn-feed:hover:not(:disabled) {
-  background: var(--brown-mid);
+  border-color: var(--text-muted);
 }
 
 .btn-feed:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 

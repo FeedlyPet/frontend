@@ -514,40 +514,39 @@ const portionsLeft = computed(() => {
 }
 
 .btn-edit {
-  padding: 0.5rem 1rem;
-  background: var(--bg-page);
+  padding: 0.5rem 0.9rem;
   border: 1.5px solid var(--border);
+  background: var(--bg-card);
   border-radius: 0.75rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
   font-family: 'Outfit', sans-serif;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .btn-edit:hover {
   border-color: var(--text-muted);
-  color: var(--text-muted);
 }
 
 .btn-delete {
-  padding: 0.5rem 1rem;
-  background: #FEF0F0;
-  border: 1.5px solid #f5c6c6;
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
   border-radius: 0.75rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: #e74c3c;
+  color: var(--text-secondary);
   cursor: pointer;
   font-family: 'Outfit', sans-serif;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .btn-delete:hover {
-  background: #e74c3c;
-  color: #fff;
-  border-color: #e74c3c;
+  border-color: var(--text-muted);
 }
 
 .section-card {
@@ -641,21 +640,22 @@ const portionsLeft = computed(() => {
 }
 
 .btn-feed-big {
-  padding: 0.75rem 1.5rem;
-  background: var(--brown-light);
-  color: #fdf6ec;
-  border: none;
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
   border-radius: 0.75rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  color: var(--text-secondary);
   font-family: 'Outfit', sans-serif;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
   align-self: flex-start;
+  white-space: nowrap;
 }
 
 .btn-feed-big:hover {
-  background: var(--brown-mid);
+  border-color: var(--text-muted);
 }
 
 .schedule-hint {
@@ -747,22 +747,22 @@ const portionsLeft = computed(() => {
 }
 
 .btn-regen {
-  padding: 0.6rem 1.2rem;
-  background: var(--bg-page);
+  padding: 0.5rem 0.9rem;
   border: 1.5px solid var(--border);
+  background: var(--bg-card);
   border-radius: 0.75rem;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
   font-family: 'Outfit', sans-serif;
   transition: all 0.2s;
   align-self: flex-start;
+  white-space: nowrap;
 }
 
 .btn-regen:hover {
   border-color: var(--text-muted);
-  color: var(--text-muted);
 }
 
 @media (max-width: 480px) {
