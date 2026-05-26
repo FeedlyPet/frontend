@@ -135,7 +135,7 @@ const successRate = computed(() => {
         </div>
 
         <div class="stat-card">
-          <div class="stat-value">{{ stats.averagePortion }}g</div>
+          <div class="stat-value">{{ stats.averagePortion != null ? stats.averagePortion + 'g' : '—' }}</div>
           <div class="stat-label">Avg portion</div>
           <div class="stat-change neutral">—</div>
         </div>

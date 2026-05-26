@@ -91,7 +91,8 @@ const chartMax = computed(() => {
 })
 
 function dayLabel(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString(undefined, {weekday: 'short'})
+  const [year, month, day] = dateStr.split('-').map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString(undefined, {weekday: 'short'})
 }
 
 onMounted(async () => {
@@ -225,7 +226,7 @@ onBeforeUnmount(() => {
             <span class="chip-label">{{ t.foodServed }}</span>
           </div>
           <div class="week-chip">
-            <span class="chip-value">{{ weekStats.averagePortion }}g</span>
+            <span class="chip-value">{{ weekStats.averagePortion != null ? weekStats.averagePortion + 'g' : '—' }}</span>
             <span class="chip-label">{{ t.avgPortion }}</span>
           </div>
           <div class="week-chip" :class="{ 'chip-warn': successRate !== null && successRate < 80 }">
