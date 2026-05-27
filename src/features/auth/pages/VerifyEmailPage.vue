@@ -35,6 +35,7 @@ async function verifyToken(token: string) {
   try {
     await authApi.verifyEmail(token)
     status.value = 'success'
+    localStorage.removeItem('pendingVerificationEmail')
     const t = setInterval(() => {
       countdown.value--
       if (countdown.value <= 0) {
@@ -49,13 +50,17 @@ async function verifyToken(token: string) {
 }
 
 async function resend() {
-  if (!resendEmail.value.trim()) return
+  if (!resendEmail.value.trim()) {
+    toast.error('Please enter your email address')
+    return
+  }
   try {
     await authApi.resendVerification(resendEmail.value.trim())
     startCooldown()
     toast.success('Verification email sent')
-  } catch {
-    toast.error('Failed to resend verification email')
+  } catch (e: unknown) {
+    const msg = (e as any)?.response?.data?.message ?? 'Failed to resend verification email'
+    toast.error(msg)
   }
 }
 
