@@ -520,7 +520,7 @@ onBeforeUnmount(() => {
 
 .week-chart {
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   gap: 0.5rem;
   height: 120px;
   padding: 0 0.25rem;
